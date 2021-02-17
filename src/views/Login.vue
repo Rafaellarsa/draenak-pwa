@@ -1,6 +1,8 @@
 <template>
   <v-container>
-    <v-row>
+    <Register v-if="isRegisterMode" @leave-register="onLeaveRegister()" />
+
+    <v-row v-else>
       <v-col cols="12" md="4">
         <img alt="Vue logo" src="@/assets/logo.png" />
 
@@ -9,10 +11,8 @@
           <v-text-field label="Senha" type="password" required></v-text-field>
           <v-btn elevation="2" @click="$emit('login')">Entrar</v-btn>
           <div class="links">
-            <p @click="onForgotPassword()">Esqueceu sua senha?</p>
-            <router-link to="/register"
-              >Não tem conta? Cadastre-se!</router-link
-            >
+            <a @click="onForgotPassword()">Esqueceu sua senha?</a>
+            <a @click="onRegister()">Não tem conta? Cadastre-se!</a>
           </div>
         </v-form>
       </v-col>
@@ -27,23 +27,32 @@
 
 <script>
 import ForgotPasswordDialog from "@/components/ForgotPasswordDialog";
+import Register from "@/components/Register";
 
 export default {
   name: "Login",
   components: {
-    ForgotPasswordDialog
+    ForgotPasswordDialog,
+    Register
   },
   data() {
     return {
-      isDialogVisible: false
+      isDialogVisible: false,
+      isRegisterMode: false
     };
   },
   methods: {
+    onCloseDialog() {
+      this.isDialogVisible = false;
+    },
     onForgotPassword() {
       this.isDialogVisible = true;
     },
-    onCloseDialog() {
-      this.isDialogVisible = false;
+    onLeaveRegister() {
+      this.isRegisterMode = false;
+    },
+    onRegister() {
+      this.isRegisterMode = true;
     }
   }
 };
@@ -62,6 +71,10 @@ export default {
 .links {
   text-align: center;
   margin-top: 3rem;
+}
+
+a {
+  display: block;
 }
 
 p {

@@ -2,7 +2,9 @@
   <v-dialog v-model="isVisible" max-width="500">
     <v-card>
       <v-card-title> Esqueceu a senha? </v-card-title>
-      <v-card-text>Ponha aqui seu email</v-card-text>
+      <v-card-text>
+        <v-text-field label="Email" required></v-text-field>
+      </v-card-text>
       <v-card-actions>
         <v-btn @click="$emit('close-dialog')">Cancelar</v-btn>
         <v-btn>Enviar</v-btn>
