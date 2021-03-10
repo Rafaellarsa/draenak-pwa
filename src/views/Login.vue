@@ -59,8 +59,11 @@ export default {
 </script>
 
 <style scoped>
-#app {
+.container {
   margin: auto;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
 }
 
 .col-md-4 {
