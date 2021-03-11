@@ -1,7 +1,11 @@
 <template>
   <v-app>
     <div id="app">
-      <router-view v-if="isLogged"></router-view>
+      <div v-if="isLogged">
+        <router-view></router-view>
+        <bottom-menu></bottom-menu>
+      </div>
+
       <Login @login="onLogin()" v-else />
 
       <div class="update-dialog" v-if="prompt">
@@ -29,11 +33,13 @@
 
 <script>
 import Login from "./views/Login";
+import BottomMenu from "@/components/BottomMenu";
 
 export default {
   name: "App",
   components: {
-    Login
+    Login,
+    "bottom-menu": BottomMenu,
   },
   methods: {
     async update() {
@@ -42,12 +48,12 @@ export default {
     },
     onLogin() {
       this.isLogged = true;
-    }
+    },
   },
   data() {
     return {
       prompt: false,
-      isLogged: false
+      isLogged: false,
     };
   },
   created() {
@@ -56,7 +62,7 @@ export default {
         this.prompt = true;
       });
     }
-  }
+  },
 };
 </script>
 
