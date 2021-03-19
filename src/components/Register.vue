@@ -12,19 +12,6 @@
           type="password"
           required
         ></v-text-field>
-        <v-radio-group row mandatory>
-          <label>
-            Como você costuma jogar RPG?
-          </label>
-          <div class="preference">
-            <v-radio label="Mestre" color="red" value="red"></v-radio>
-            <v-radio label="Jogador" color="indigo" value="indigo"></v-radio>
-          </div>
-          <small
-            >Não se preocupe, você poderá alterar essa escolha a qualquer
-            momento!</small
-          >
-        </v-radio-group>
         <v-btn elevation="2">Cadastrar</v-btn>
       </v-form>
     </v-col>
@@ -49,9 +36,5 @@ export default {
 .col-md-4 {
   margin-left: auto;
   margin-right: auto;
-}
-
-.preference {
-  display: block;
 }
 </style>

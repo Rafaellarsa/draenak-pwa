@@ -24,6 +24,11 @@ const routes = [
     path: "/parties-list",
     name: "parties-list",
     component: () => import("@/views/PartiesList.vue")
+  },
+  {
+    path: "/settings",
+    name: "settings",
+    component: () => import("@/views/Settings.vue")
   }
 ];
 

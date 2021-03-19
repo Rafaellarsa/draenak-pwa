@@ -3,7 +3,7 @@
     <v-toolbar flat>
       <v-icon>mdi-arrow-left</v-icon>
       <v-spacer></v-spacer>
-      <v-icon>mdi-cog</v-icon>
+      <v-icon @click="onClickSettings()">mdi-cog</v-icon>
     </v-toolbar>
     <h1>Mesas</h1>
 
@@ -38,6 +38,22 @@
     </v-toolbar>
     <h1>{{ selectedParty.name }}</h1>
     <h2>{{ selectedParty.quantity }}</h2>
+
+    <v-row justify="center" class="ma-0">
+      <v-expansion-panels>
+        <v-expansion-panel v-for="(item, i) in 5" :key="i" class="ma-1">
+          <v-expansion-panel-header :color="color"
+            >Item</v-expansion-panel-header
+          >
+          <v-expansion-panel-content>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat.
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </v-row>
   </v-container>
 </template>
 
@@ -51,21 +67,24 @@ export default {
       parties: [
         {
           name: "Rolezinho virtual",
-          quantity: "2 participantes",
+          quantity: "2 participantes"
         },
         {
           name: "Gente entediada",
-          quantity: "5 participantes",
-        },
+          quantity: "5 participantes"
+        }
       ],
-      selectedParty: null,
+      selectedParty: null
     };
   },
   methods: {
     onClickParty(party) {
       this.selectedParty = party;
     },
-  },
+    onClickSettings() {
+      this.$router.push("/settings");
+    }
+  }
 };
 </script>
 
