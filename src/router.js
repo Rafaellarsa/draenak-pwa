@@ -11,9 +11,9 @@ const routes = [
     component: Home
   },
   // {
-  //   path: "/register",
-  //   name: "register",
-  //   component: () => import("@/views/Register.vue")
+  //   path: "/sign-up",
+  //   name: "sign-up",
+  //   component: () => import("@/views/SignUp.vue")
   // },
   {
     path: "/sheets-list",

@@ -1,15 +1,28 @@
 <template>
   <v-container>
-    <Register v-if="isRegisterMode" @leave-register="onLeaveRegister()" />
+    <SignUp
+      v-if="isRegisterMode"
+      @leave-register="onLeaveRegister()"
+      @login="$emit('login', arguments[0])"
+    />
 
     <v-row v-else>
       <v-col cols="12" md="4">
         <img alt="Vue logo" src="@/assets/logo.png" />
 
         <v-form>
-          <v-text-field label="Email" required></v-text-field>
-          <v-text-field label="Senha" type="password" required></v-text-field>
-          <v-btn elevation="2" @click="$emit('login')">Entrar</v-btn>
+          <v-text-field
+            label="Email"
+            v-model="user.email"
+            required
+          ></v-text-field>
+          <v-text-field
+            label="Senha"
+            type="password"
+            v-model="user.password"
+            required
+          ></v-text-field>
+          <v-btn elevation="2" @click="$emit('login', user)">Entrar</v-btn>
           <div class="links">
             <a @click="onForgotPassword()">Esqueceu sua senha?</a>
             <a @click="onRegister()">Não tem conta? Cadastre-se!</a>
@@ -27,18 +40,22 @@
 
 <script>
 import ForgotPasswordDialog from "@/components/ForgotPasswordDialog";
-import Register from "@/components/Register";
+import SignUp from "@/components/SignUp";
 
 export default {
   name: "Login",
   components: {
     ForgotPasswordDialog,
-    Register
+    SignUp
   },
   data() {
     return {
       isDialogVisible: false,
-      isRegisterMode: false
+      isRegisterMode: false,
+      user: {
+        email: "",
+        password: ""
+      }
     };
   },
   methods: {

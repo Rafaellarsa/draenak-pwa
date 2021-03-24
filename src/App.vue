@@ -6,7 +6,7 @@
         <bottom-menu></bottom-menu>
       </div>
 
-      <Login @login="onLogin()" v-else />
+      <Login @login="onLogin(arguments[0])" v-else />
 
       <div class="update-dialog" v-if="prompt">
         <div class="update-dialog__content">
@@ -32,6 +32,9 @@
 </template>
 
 <script>
+import firebase from "firebase/app";
+import "firebase/auth";
+
 import Login from "./views/Login";
 import BottomMenu from "@/components/BottomMenu";
 
@@ -39,22 +42,17 @@ export default {
   name: "App",
   components: {
     Login,
-    "bottom-menu": BottomMenu,
-  },
-  methods: {
-    async update() {
-      this.prompt = false;
-      await this.$workbox.messageSW({ type: "SKIP_WAITING" });
-    },
-    onLogin() {
-      this.isLogged = true;
-    },
+    "bottom-menu": BottomMenu
   },
   data() {
     return {
-      prompt: false,
-      isLogged: false,
+      prompt: false
     };
+  },
+  computed: {
+    isLogged() {
+      return this.$store.state.user.isLogged;
+    }
   },
   created() {
     if (this.$workbox) {
@@ -63,6 +61,37 @@ export default {
       });
     }
   },
+  methods: {
+    async update() {
+      this.prompt = false;
+      await this.$workbox.messageSW({ type: "SKIP_WAITING" });
+    },
+    onLogin(user) {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(user.email, user.password)
+        .then(() => {
+          this.getUser();
+        })
+        .catch(errorHandle => {
+          console.log(errorHandle);
+        });
+    },
+    getUser() {
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          const loggedUser = {
+            email: user.email,
+            username: user.displayName
+          };
+          this.$store.commit("setUser", loggedUser);
+          this.$store.commit("setIsLogged", true);
+        } else {
+          return false;
+        }
+      });
+    }
+  }
 };
 </script>
 

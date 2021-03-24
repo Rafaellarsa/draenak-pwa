@@ -11,15 +11,15 @@
 
 <script>
 export default {
-    name: "BottomMenu",
-    methods: {
-        onClickParties() {
-            this.$router.push('/parties-list');
-        },
-        onClickSheets() {
-            this.$router.push('/sheets-list');
-        }
+  name: "BottomMenu",
+  methods: {
+    onClickParties() {
+      this.$router.push("/parties-list");
+    },
+    onClickSheets() {
+      this.$router.push("/sheets-list");
     }
+  }
 };
 </script>
 

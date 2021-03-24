@@ -1,7 +1,6 @@
 <template>
   <v-container v-if="!selectedParty">
     <v-toolbar flat>
-      <v-icon>mdi-arrow-left</v-icon>
       <v-spacer></v-spacer>
       <v-icon @click="onClickSettings()">mdi-cog</v-icon>
     </v-toolbar>
