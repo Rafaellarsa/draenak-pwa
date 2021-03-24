@@ -15,7 +15,7 @@ Através do *link* ou baixando os arquivos compactados.
 ```
 npm install
 ```
-(requer [ https://nodejs.org/pt-br/download/
+[requer](https://nodejs.org/pt-br/download/)
 
 ### Compilar com atualização em tempo real
 ```
