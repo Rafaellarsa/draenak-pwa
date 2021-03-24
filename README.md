@@ -9,13 +9,14 @@
 ### Clonar
 
 ![Botão de clonagem](https://user-images.githubusercontent.com/46501003/112393451-d8525b80-8cd9-11eb-8539-fa8c3a4ed1fa.png)
+
 Através do *link* ou baixando os arquivos compactados.
 
 ### Instalar dependências
 ```
 npm install
 ```
-[requer](https://nodejs.org/pt-br/download/)
+Requer [node](https://nodejs.org/pt-br/download/).
 
 ### Compilar com atualização em tempo real
 ```
