@@ -1,5 +1,23 @@
 # draenak-pwa
 
+## Sobre o projeto
+
+O projeto é um PWA (híbrido entre *site* e aplicativo) voltado para *smartphones* que se propõe a ser uma ferramenta de auxílio para jogadores de RPG (Role Playing Game) de mesa. Mais especificamente, entrega uma forma rápida, intuitiva e agradável de fazer fichas no sistema Draenak de RPG e as armazena para consultas e edições. Além disso, a aplicação possui a funcionalidade de gerenciamento de mesas, nas quais os jogadores podem ver as informações básicas das fichas dos demais e o mestre pode ver todas as informações de todas as fichas, facilitando o planejamento e a condução das sessões. A interface, leve e jovem, remete a jogos e fantasia sem se restringir a nenhum tema específico de RPG - proporcionando, assim, maior liberdade para os usuários na escolha da ambientação.
+
+## Sobre o cliente
+
+João Pedro Osawa, desenvolvedor de jogos formado em Sistemas e Mídias Digitais na Universidade Federal do Ceará (UFC), joga RPG há 14 anos e está desenvolvendo um sistema próprio - o Draenak.
+
+## Sobre a equipe
+
+### Equipe Pica-pau
+
+- Luana Helena de Oliveira Viana
+- Marcos Paulo Oliveira de Almeida
+- Maria Eduarda Olinda Oliveira Bernardo
+- Nicole Inácio Sousa
+- Rafaella Sampaio de Alencar
+
 ## Projeto hospedado
 
 <https://draenakpwa.web.app/>
@@ -13,12 +31,14 @@
 Através do *link* ou baixando os arquivos compactados.
 
 ### Instalar dependências
+
 ```
 npm install
 ```
 Requer [node](https://nodejs.org/pt-br/download/).
 
 ### Compilar com atualização em tempo real
+
 ```
 npm run serve
 ```
