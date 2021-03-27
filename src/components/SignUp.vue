@@ -22,7 +22,15 @@
           v-model="passwordConfirmation"
           required
         ></v-text-field>
-        <v-btn elevation="2" @click="onClickSignUp()">Cadastrar</v-btn>
+        <v-btn
+          elevation="2"
+          color="primary"
+          block
+          depressed
+          tile
+          @click="onClickSignUp()"
+          >Cadastrar</v-btn
+        >
       </v-form>
     </v-col>
   </v-row>

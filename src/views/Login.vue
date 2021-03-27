@@ -12,24 +12,35 @@
 
         <v-form>
           <v-text-field
+            class="custom-placeholder"
             label="Email"
             v-model="user.email"
             required
           ></v-text-field>
           <v-text-field
+            class="custom-placeholder"
             label="Senha"
             type="password"
             v-model="user.password"
             required
           ></v-text-field>
-          <v-btn elevation="2" @click="$emit('login', user)">Entrar</v-btn>
           <div class="links">
             <a @click="onForgotPassword()">Esqueceu sua senha?</a>
             <a @click="onRegister()">Não tem conta? Cadastre-se!</a>
           </div>
+          <v-btn color="primary" block depressed tile @click="onLogin()"
+            >Entrar</v-btn
+          >
         </v-form>
       </v-col>
     </v-row>
+
+    <MessageDialog
+      :is-dialog-visible="isMessageDialogVisible"
+      title="Erro"
+      :message="error"
+      buttonText="Okay"
+    />
 
     <ForgotPasswordDialog
       :is-dialog-visible="isDialogVisible"
@@ -39,18 +50,25 @@
 </template>
 
 <script>
+import firebase from "firebase/app";
+import "firebase/auth";
+
 import ForgotPasswordDialog from "@/components/ForgotPasswordDialog";
+import MessageDialog from "@/components/MessageDialog";
 import SignUp from "@/components/SignUp";
 
 export default {
   name: "Login",
   components: {
     ForgotPasswordDialog,
+    MessageDialog,
     SignUp
   },
   data() {
     return {
+      error: "",
       isDialogVisible: false,
+      isMessageDialogVisible: false,
       isRegisterMode: false,
       user: {
         email: "",
@@ -70,31 +88,73 @@ export default {
     },
     onRegister() {
       this.isRegisterMode = true;
+    },
+    onLogin() {
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(this.user.email, this.user.password)
+        .then(() => {
+          this.getUser();
+        })
+        .catch(error => {
+          this.error = error.message;
+          this.isMessageDialogVisible = true;
+        });
+    },
+    getUser() {
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          const loggedUser = {
+            email: user.email,
+            username: user.displayName
+          };
+          this.$store.commit("setUser", loggedUser);
+          this.$store.commit("setIsLogged", true);
+        } else {
+          return false;
+        }
+      });
     }
   }
 };
 </script>
 
+<style>
+.v-application .primary--text {
+  font-style: normal !important;
+}
+
+.v-text-field .v-label {
+  font-style: italic;
+  overflow: visible !important;
+}
+</style>
 <style scoped>
 .container {
   margin: auto;
+  padding: 0;
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  max-width: 62.5vw;
 }
 
 .col-md-4 {
   margin-left: auto;
   margin-right: auto;
+  padding: 0;
 }
 
 .links {
   text-align: center;
-  margin-top: 3rem;
+  margin-bottom: 3rem;
+  font-size: 13px;
 }
 
-a {
+.links a {
   display: block;
+  line-height: 15.23px;
+  color: #2d9cdb !important;
 }
 
 p {
