@@ -8,7 +8,7 @@
 
     <v-row v-else>
       <v-col cols="12" md="4">
-        <img alt="Vue logo" src="@/assets/logo.png" />
+        <img alt="Vue logo" src="@/assets/logo.svg" />
 
         <v-form>
           <v-text-field
@@ -40,6 +40,7 @@
       title="Erro"
       :message="error"
       buttonText="Okay"
+      @close-dialog="isMessageDialogVisible = false"
     />
 
     <ForgotPasswordDialog
@@ -125,7 +126,10 @@ export default {
 }
 
 .v-text-field .v-label {
+  margin-left: 0.6rem;
   font-style: italic;
+  font-size: 14px;
+  color: #b1acac !important;
   overflow: visible !important;
 }
 </style>
@@ -145,15 +149,19 @@ export default {
   padding: 0;
 }
 
+img {
+  max-width: 70%;
+}
+
 .links {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 5rem;
   font-size: 13px;
 }
 
 .links a {
   display: block;
-  line-height: 15.23px;
+  line-height: 1.5rem;
   color: #2d9cdb !important;
 }
 

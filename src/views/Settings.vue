@@ -58,6 +58,14 @@
         </v-card-actions></v-card
       ></v-dialog
     >
+
+    <MessageDialog
+      :is-dialog-visible="isMessageDialogVisible"
+      title="Erro"
+      :message="error"
+      buttonText="Okay"
+      @close-dialog="isMessageDialogVisible = false"
+    />
   </v-container>
 </template>
 
@@ -66,11 +74,18 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
 
+import MessageDialog from "@/components/MessageDialog";
+
 export default {
   name: "Settings",
+  components: {
+    MessageDialog
+  },
   data() {
     return {
+      error: "",
       isDialogVisible: false,
+      isMessageDialogVisible: false,
       email: "",
       username: "",
       oldPassword: "",
@@ -108,8 +123,9 @@ export default {
                   userName: username
                 });
             })
-            .catch(function(errorHandle) {
-              console.log(errorHandle);
+            .catch(error => {
+              this.error = error.message;
+              this.isMessageDialogVisible = true;
             });
 
           if (newPassword != null && newPassword === newPasswordConfirmation) {
@@ -125,17 +141,18 @@ export default {
                 firebase
                   .auth()
                   .currentUser.updatePassword(newPassword)
-                  .catch(function(errorHandle) {
-                    console.log(errorHandle);
+                  .catch(error => {
+                    this.error = error.message;
+                    this.isMessageDialogVisible = true;
                     return;
                   });
                 this.oldPassword = "";
                 this.newPassword = "";
                 this.newPasswordConfirmation = "";
               })
-              .catch(errorHandle => {
-                console.log(errorHandle);
-                return;
+              .catch(error => {
+                this.error = error.message;
+                this.isMessageDialogVisible = true;
               });
           }
         }

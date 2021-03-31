@@ -1,15 +1,11 @@
 <template>
   <v-container v-if="!selectedParty">
-    <v-toolbar flat>
-      <v-spacer></v-spacer>
-      <v-icon @click="onClickSettings()">mdi-cog</v-icon>
-    </v-toolbar>
     <h1>Mesas</h1>
 
     <v-container>
       <v-row dense>
         <v-col v-for="(item, index) in parties" :key="index" cols="12">
-          <v-card :color="color" dark @click="onClickParty(item)">
+          <v-card color="white" @click="onClickParty(item)">
             <div class="d-flex flex-no-wrap justify-space-between">
               <v-avatar class="ma-3" size="48">
                 <v-img src="@/assets/default-user-image.png"></v-img>
@@ -28,6 +24,12 @@
         </v-col>
       </v-row>
     </v-container>
+
+    <v-btn class="mx-2 mb-10" fab small absolute bottom right color="secondary">
+      <v-icon>
+        mdi-plus
+      </v-icon>
+    </v-btn>
   </v-container>
 
   <v-container v-else>
@@ -79,9 +81,6 @@ export default {
   methods: {
     onClickParty(party) {
       this.selectedParty = party;
-    },
-    onClickSettings() {
-      this.$router.push("/settings");
     }
   }
 };

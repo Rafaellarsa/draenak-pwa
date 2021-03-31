@@ -1,15 +1,11 @@
 <template>
   <v-container v-if="!selectedSheet">
-    <v-toolbar flat>
-      <v-spacer></v-spacer>
-      <v-icon @click="onClickSettings()">mdi-cog</v-icon>
-    </v-toolbar>
     <h1>Personagens</h1>
 
     <v-container>
       <v-row dense>
         <v-col v-for="(item, index) in sheets" :key="index" cols="12">
-          <v-card :color="color" dark @click="onClickSheet(item)">
+          <v-card color="white" @click="onClickSheet(item)">
             <div class="d-flex flex-no-wrap justify-space-between">
               <v-avatar class="ma-3" size="48">
                 <v-img src="@/assets/default-user-image.png"></v-img>
@@ -21,13 +17,23 @@
                   v-text="item.name"
                 ></v-card-title>
 
-                <v-card-subtitle v-text="item.race"></v-card-subtitle>
+                <v-card-text>
+                  {{ item.race }}<br />
+                  {{ item.age + "anos" }}<br />
+                  {{ "Mesa: " + item.party }}
+                </v-card-text>
               </div>
             </div>
           </v-card>
         </v-col>
       </v-row>
     </v-container>
+
+    <v-btn class="mx-2 mb-10" fab small absolute bottom right color="primary">
+      <v-icon>
+        mdi-plus
+      </v-icon>
+    </v-btn>
   </v-container>
 
   <v-container v-else>
@@ -66,12 +72,16 @@ export default {
       selectedSheet: null,
       sheets: [
         {
-          name: "Fulaninha da Silva",
-          race: "Elfa"
+          name: "Galadriel",
+          race: "Elfo",
+          age: 120,
+          party: "Terra Média"
         },
         {
-          name: "Sicrano de Almeida",
-          race: "Anão"
+          name: "Fulaninha da Silva",
+          race: "Humano",
+          age: 34,
+          party: "Rolezinho Virtual"
         }
       ]
     };
@@ -79,9 +89,6 @@ export default {
   methods: {
     onClickSheet(sheet) {
       this.selectedSheet = sheet;
-    },
-    onClickSettings() {
-      this.$router.push("/settings");
     }
   }
 };

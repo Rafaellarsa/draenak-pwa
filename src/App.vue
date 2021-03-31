@@ -2,44 +2,44 @@
   <v-app>
     <div id="app">
       <div v-if="isLogged">
+        <top-menu
+          v-if="this.$router.currentRoute.name !== 'settings'"
+        ></top-menu>
         <router-view></router-view>
-        <bottom-menu></bottom-menu>
       </div>
 
       <Login v-else />
 
-      <div class="update-dialog" v-if="prompt">
-        <div class="update-dialog__content">
-          Uma nova versão foi encontrada. Atualizar versão?
-        </div>
-        <div class="update-dialog__actions">
-          <button
-            class="update-dialog__button update-dialog__button--confirm"
-            @click="update"
-          >
-            Atualizar
-          </button>
-          <button
-            class="update-dialog__button update-dialog__button--cancel"
-            @click="prompt = false"
-          >
-            Cancelar
-          </button>
-        </div>
-      </div>
+      <v-dialog v-model="prompt" max-width="500">
+        <v-card>
+          <v-card-title> Nova versão </v-card-title>
+          <v-card-text>
+            Uma nova versão foi encontrada. Atualizar versão?
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" tile depressed @click="prompt = false">
+              Cancelar
+            </v-btn>
+            <v-btn color="primary" tile depressed @click="update">
+              Atualizar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </div>
   </v-app>
 </template>
 
 <script>
 import Login from "./views/Login";
-import BottomMenu from "@/components/BottomMenu";
+import TopMenu from "@/components/TopMenu";
 
 export default {
   name: "App",
   components: {
     Login,
-    "bottom-menu": BottomMenu
+    "top-menu": TopMenu
   },
   data() {
     return {
@@ -70,18 +70,5 @@ export default {
 <style>
 #app {
   background-color: #eeeeee;
-}
-.update-dialog {
-  position: fixed;
-  left: 50%;
-  bottom: 64px;
-  transform: translateX(-50%);
-  border-radius: 4px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  padding: 12px;
-  max-width: 576px;
-  color: white;
-  background-color: #2c3e50;
-  text-align: left;
 }
 </style>

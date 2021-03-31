@@ -33,6 +33,14 @@
         >
       </v-form>
     </v-col>
+
+    <MessageDialog
+      :is-dialog-visible="isMessageDialogVisible"
+      title="Erro"
+      :message="error"
+      buttonText="Okay"
+      @close-dialog="isMessageDialogVisible = false"
+    />
   </v-row>
 </template>
 
@@ -41,10 +49,17 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
 
+import MessageDialog from "@/components/MessageDialog";
+
 export default {
   name: "SignUp",
+  components: {
+    MessageDialog
+  },
   data() {
     return {
+      error: "",
+      isMessageDialogVisible: false,
       email: "",
       username: "",
       password: "",
@@ -54,11 +69,11 @@ export default {
   methods: {
     onClickSignUp() {
       if (this.password != this.passwordConfirmation) {
-        alert("Senhas divergentes");
-        return;
+        this.error = "Senhas divergentes.";
+        this.isMessageDialogVisible = true;
       } else if (this.password.length < 4) {
-        alert("Quantidade de caracteres não permitido");
-        return;
+        this.error = "Quantidade de caracteres não permitido.";
+        this.isMessageDialogVisible = true;
       } else {
         this.signUp(
           this.email,
@@ -97,8 +112,10 @@ export default {
                 const user = { email: email, password: password };
                 this.$emit("login", user);
               })
-              .catch(function(errorHandle) {
-                console.log(errorHandle);
+              .catch(function(error) {
+                this.error = error.message;
+                this.isMessageDialogVisible = true;
+                console.log(error);
               });
           });
       }
