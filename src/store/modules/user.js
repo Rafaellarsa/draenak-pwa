@@ -2,7 +2,8 @@ export default {
   state: {
     user: {
       email: "",
-      username: ""
+      username: "",
+      id: ""
     },
     isLogged: false
   },

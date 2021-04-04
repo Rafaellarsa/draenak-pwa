@@ -1,11 +1,9 @@
 <template>
   <v-container v-if="!selectedParty">
-    <h1>Mesas</h1>
-
     <v-container>
       <v-row dense>
-        <v-col v-for="(item, index) in parties" :key="index" cols="12">
-          <v-card color="white" @click="onClickParty(item)">
+        <v-col v-for="(party, index) in parties" :key="index" cols="12">
+          <v-card color="white" @click="onClickParty(party)">
             <div class="d-flex flex-no-wrap justify-space-between">
               <v-avatar class="ma-3" size="48">
                 <v-img src="@/assets/default-user-image.png"></v-img>
@@ -14,10 +12,14 @@
               <div>
                 <v-card-title
                   class="headline"
-                  v-text="item.name"
+                  v-text="party.name"
                 ></v-card-title>
 
-                <v-card-subtitle v-text="item.quantity"></v-card-subtitle>
+                <v-card-text>
+                  {{ party.theme }}<br />
+                  {{ party.quantity + " jogadores" }}<br />
+                  {{ party.points + " pontos" }}
+                </v-card-text>
               </div>
             </div>
           </v-card>
@@ -25,7 +27,7 @@
       </v-row>
     </v-container>
 
-    <v-btn class="mx-2 mb-10" fab small absolute bottom right color="secondary">
+    <v-btn class="mx-2 mb-1" fab small fixed bottom right color="secondary">
       <v-icon>
         mdi-plus
       </v-icon>
@@ -60,7 +62,7 @@
 
 <script>
 export default {
-  name: "SheetsList",
+  name: "PartiesList",
   components: {},
   data() {
     return {
@@ -68,11 +70,27 @@ export default {
       parties: [
         {
           name: "Rolezinho virtual",
-          quantity: "2 participantes"
+          theme: "Fantasia Medieval",
+          quantity: 2,
+          points: 120
         },
         {
-          name: "Gente entediada",
-          quantity: "5 participantes"
+          name: "Nightcity",
+          theme: "Cyberpunk",
+          quantity: 3,
+          points: 200
+        },
+        {
+          name: "Castelo Ratibum",
+          theme: "Fantasia",
+          quantity: 4,
+          points: 135
+        },
+        {
+          name: "Terra Média",
+          theme: "Alta fantasia",
+          quantity: 4,
+          points: 230
         }
       ],
       selectedParty: null
@@ -86,4 +104,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+h1 {
+  color: #209898;
+}
+</style>

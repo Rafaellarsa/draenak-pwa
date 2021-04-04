@@ -107,7 +107,8 @@ export default {
         if (user) {
           const loggedUser = {
             email: user.email,
-            username: user.displayName
+            username: user.displayName,
+            id: user.uid
           };
           this.$store.commit("setUser", loggedUser);
           this.$store.commit("setIsLogged", true);

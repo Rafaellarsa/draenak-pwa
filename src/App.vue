@@ -2,9 +2,7 @@
   <v-app>
     <div id="app">
       <div v-if="isLogged">
-        <top-menu
-          v-if="this.$router.currentRoute.name !== 'settings'"
-        ></top-menu>
+        <TopMenu v-if="this.$router.currentRoute.name !== 'settings'" />
         <router-view></router-view>
       </div>
 
@@ -39,7 +37,7 @@ export default {
   name: "App",
   components: {
     Login,
-    "top-menu": TopMenu
+    TopMenu
   },
   data() {
     return {

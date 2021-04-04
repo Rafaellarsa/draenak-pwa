@@ -1,11 +1,9 @@
 <template>
   <v-container v-if="!selectedSheet">
-    <h1>Personagens</h1>
-
     <v-container>
       <v-row dense>
-        <v-col v-for="(item, index) in sheets" :key="index" cols="12">
-          <v-card color="white" @click="onClickSheet(item)">
+        <v-col v-for="(sheet, index) in sheets" :key="index" cols="12">
+          <v-card color="white" @click="onClickSheet(sheet)">
             <div class="d-flex flex-no-wrap justify-space-between">
               <v-avatar class="ma-3" size="48">
                 <v-img src="@/assets/default-user-image.png"></v-img>
@@ -14,13 +12,13 @@
               <div>
                 <v-card-title
                   class="headline"
-                  v-text="item.name"
+                  v-text="sheet.name"
                 ></v-card-title>
 
                 <v-card-text>
-                  {{ item.race }}<br />
-                  {{ item.age + "anos" }}<br />
-                  {{ "Mesa: " + item.party }}
+                  {{ sheet.race }}<br />
+                  {{ sheet.age + " anos" }}<br />
+                  {{ "Mesa: " + sheet.party }}
                 </v-card-text>
               </div>
             </div>
@@ -29,69 +27,72 @@
       </v-row>
     </v-container>
 
-    <v-btn class="mx-2 mb-10" fab small absolute bottom right color="primary">
-      <v-icon>
+    <v-btn class="mx-2 mb-1" fab small fixed bottom right color="primary">
+      <v-icon @click="onClickNewSheet()">
         mdi-plus
       </v-icon>
     </v-btn>
+
+    <NewSheetDialog
+      :is-dialog-visible="isDialogVisible"
+      @close-dialog="onCloseDialog()"
+      @update-sheets-list="getSheetsList()"
+    ></NewSheetDialog>
   </v-container>
 
-  <v-container v-else>
-    <v-toolbar flat>
-      <v-icon @click="selectedSheet = null">mdi-arrow-left</v-icon>
-      <v-spacer></v-spacer>
-    </v-toolbar>
-    <h1>{{ selectedSheet.name }}</h1>
-    <h2>{{ selectedSheet.race }}</h2>
-
-    <v-row justify="center" class="ma-0">
-      <v-expansion-panels>
-        <v-expansion-panel v-for="(item, i) in 5" :key="i" class="ma-1">
-          <v-expansion-panel-header :color="color"
-            >Item</v-expansion-panel-header
-          >
-          <v-expansion-panel-content>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat.
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
-    </v-row>
-  </v-container>
+  <CharacterSheet v-else :character="selectedSheet" />
 </template>
 
 <script>
+import firebase from "firebase/app";
+import "firebase/database";
+
+import CharacterSheet from "@/components/CharacterSheet";
+import NewSheetDialog from "@/components/NewSheetDialog";
+
 export default {
   name: "SheetsList",
-  components: {},
+  components: {
+    CharacterSheet,
+    NewSheetDialog
+  },
   data() {
     return {
-      color: "#3C096C",
+      isDialogVisible: false,
       selectedSheet: null,
-      sheets: [
-        {
-          name: "Galadriel",
-          race: "Elfo",
-          age: 120,
-          party: "Terra Média"
-        },
-        {
-          name: "Fulaninha da Silva",
-          race: "Humano",
-          age: 34,
-          party: "Rolezinho Virtual"
-        }
-      ]
+      sheets: null
     };
   },
+  mounted() {
+    this.getSheetsList();
+  },
   methods: {
+    getSheetsList() {
+      var cardsList = [];
+
+      firebase
+        .database()
+        .ref("characterSheets/" + this.$store.state.user.user.id)
+        .once("value", snapshot => {
+          snapshot.forEach(item => {
+            var cardsValue = item.val();
+            cardsList.push(cardsValue);
+          });
+        });
+
+      this.sheets = cardsList;
+    },
     onClickSheet(sheet) {
       this.selectedSheet = sheet;
+    },
+    onClickNewSheet() {
+      this.isDialogVisible = true;
+    },
+    onCloseDialog() {
+      this.isDialogVisible = false;
     }
   }
 };
 </script>
 
-<style></style>
+<style scoped></style>
