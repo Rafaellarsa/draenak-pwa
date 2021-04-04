@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar flat color="#eeeeee">
+  <v-app-bar fixed flat color="#eeeeee">
     <v-spacer style="width: 24px"></v-spacer>
     <v-tabs centered grow :color="color" v-model="tab">
       <v-tabs-slider :color="color"></v-tabs-slider>

@@ -5,20 +5,25 @@
         <v-col v-for="(sheet, index) in sheets" :key="index" cols="12">
           <v-card color="white" @click="onClickSheet(sheet)">
             <div class="d-flex flex-no-wrap justify-space-between">
-              <v-avatar class="ma-3" size="48">
+              <!-- <v-avatar class="ma-3" size="48">
                 <v-img src="@/assets/default-user-image.png"></v-img>
-              </v-avatar>
+              </v-avatar> -->
+              <v-img
+                src="@/assets/avatar-placeholder.gif"
+                height="127"
+                width="95"
+              ></v-img>
 
-              <div>
+              <div style="width: 80%">
                 <v-card-title
                   class="headline"
                   v-text="sheet.name"
                 ></v-card-title>
 
                 <v-card-text>
-                  {{ sheet.race }}<br />
-                  {{ sheet.age + " anos" }}<br />
-                  {{ "Mesa: " + sheet.party }}
+                  <div v-if="sheet.race">{{ sheet.race }}</div>
+                  <div v-if="sheet.age">{{ sheet.age + " anos" }}</div>
+                  <div v-if="sheet.party">{{ "Mesa: " + sheet.party }}</div>
                 </v-card-text>
               </div>
             </div>
@@ -95,4 +100,13 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.v-image {
+  border-top-left-radius: 15px !important;
+  border-bottom-left-radius: 15px !important;
+}
+
+.v-card {
+  border-radius: 15px !important;
+}
+</style>

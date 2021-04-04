@@ -3,7 +3,7 @@
     <div id="app">
       <div v-if="isLogged">
         <TopMenu v-if="this.$router.currentRoute.name !== 'settings'" />
-        <router-view></router-view>
+        <router-view class="mt-10"></router-view>
       </div>
 
       <Login v-else />

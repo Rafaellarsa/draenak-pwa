@@ -9,7 +9,7 @@
                 <v-img src="@/assets/default-user-image.png"></v-img>
               </v-avatar>
 
-              <div>
+              <div style="width: 80%">
                 <v-card-title
                   class="headline"
                   v-text="party.name"

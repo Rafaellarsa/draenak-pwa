@@ -1,6 +1,7 @@
 <template>
   <v-container>
-    <v-tabs-items v-model="currentTab">
+    <v-img src="@/assets/avatar-placeholder.gif" height="230"></v-img>
+    <v-tabs-items v-model="currentTab" class="mb-4">
       <v-tab-item>
         <MainInfo :character="character"></MainInfo>
       </v-tab-item>
@@ -14,7 +15,7 @@
         <Notes :character="character"></Notes>
       </v-tab-item>
     </v-tabs-items>
-    <v-footer padless app absolute>
+    <v-footer padless app fixed>
       <v-tabs v-model="currentTab" grow background-color="#eeeeee">
         <v-tab>1</v-tab>
         <v-tab>2</v-tab>
@@ -51,6 +52,16 @@ export default {
 };
 </script>
 
+<style scoped>
+.v-image {
+  margin-left: -12px !important;
+  margin-right: -12px !important;
+}
+
+.v-responsive {
+  max-width: 100vw !important;
+}
+</style>
 <style>
 h2 {
   color: #5915c7;
