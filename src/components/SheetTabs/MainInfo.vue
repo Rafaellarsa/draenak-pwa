@@ -1,26 +1,70 @@
 <template>
   <v-col>
     <v-row no-gutters>
-      <h2>
-        {{ character.name }}
+      <h2 v-if="!isGeneralInfoEditable">
+        {{ modifiedSheet.name }}
       </h2>
+      <v-text-field
+        class="name-field"
+        v-else
+        v-model="generalInfo.name"
+      ></v-text-field>
+
       <v-spacer></v-spacer>
       <v-icon
         v-if="!isGeneralInfoEditable"
         @click="isGeneralInfoEditable = true"
         >mdi-pencil</v-icon
       >
-      <v-icon v-else @click="isGeneralInfoEditable = false" color="primary"
+      <v-icon v-else @click="updateGeneralInfo()" color="primary"
         >mdi-check</v-icon
       >
     </v-row>
-    <p>
-      Raça: {{ character.race }}<br />
-      Altura: {{ character.height }}<br />
-      Idade: {{ character.age }}<br />
-      Pontos: {{ character.points }}<br />
-      Dinheiro: {{ character.money }}<br />
-      Mesa: {{ character.party }}
+    <p v-if="!isGeneralInfoEditable">
+      Raça: {{ modifiedSheet.race }}<br />
+      Altura: {{ modifiedSheet.height }}<br />
+      Idade: {{ modifiedSheet.age }}<br />
+      Pontos: {{ modifiedSheet.points }}<br />
+      Dinheiro: {{ modifiedSheet.money }}<br />
+      Mesa: {{ modifiedSheet.party }}
+    </p>
+    <p v-else>
+      <v-text-field
+        dense
+        hide-details
+        prefix="Raça:"
+        v-model="generalInfo.race"
+      ></v-text-field>
+      <v-text-field
+        dense
+        hide-details
+        prefix="Altura:"
+        v-model="generalInfo.height"
+      ></v-text-field>
+      <v-text-field
+        dense
+        hide-details
+        prefix="Idade:"
+        v-model="generalInfo.age"
+      ></v-text-field>
+      <v-text-field
+        dense
+        hide-details
+        prefix="Pontos:"
+        v-model="generalInfo.points"
+        type="number"
+      ></v-text-field>
+      <v-text-field
+        dense
+        hide-details
+        prefix="Dinheiro:"
+        v-model="generalInfo.money"
+      ></v-text-field>
+      <v-select
+        prefix="Mesa:"
+        no-data-text="Não há mesas disponíveis"
+        dense
+      ></v-select>
     </p>
     <v-row justify="center" no-gutters>
       <v-expansion-panels flat>
@@ -39,12 +83,13 @@
               @click="isAttributesEditable = true"
               >mdi-pencil</v-icon
             >
-            <v-icon v-else @click="isAttributesEditable = false" color="primary"
+            <v-icon v-else @click="updateAttributes()" color="primary"
               >mdi-check</v-icon
             >
           </v-row>
 
           <v-expansion-panel-content
+            v-if="!isAttributesEditable"
             color="#eeeeee"
             class="expansion-panel-content"
           >
@@ -57,6 +102,29 @@
                 color="primary"
                 :value="attribute.level * 5"
               ></v-progress-linear>
+            </div>
+          </v-expansion-panel-content>
+          <v-expansion-panel-content
+            v-else
+            color="#eeeeee"
+            class="expansion-panel-content"
+          >
+            <div
+              v-for="(attribute, index) in modifiedSheet.attributes"
+              :key="index"
+            >
+              <v-text-field
+                dense
+                hide-details
+                :prefix="attribute.name + ':'"
+                v-model="attribute.level"
+              ></v-text-field>
+              <v-slider
+                v-model="attribute.level"
+                track-color="#c4c4c4"
+                min="1"
+                max="20"
+              ></v-slider>
             </div>
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -141,13 +209,62 @@ export default {
   },
   data() {
     return {
+      modifiedSheet: null,
       isGeneralInfoEditable: false,
+      generalInfo: {
+        name: "",
+        race: "",
+        height: "",
+        age: "",
+        points: "",
+        money: ""
+      },
       isAttributesEditable: false,
+      attributes: null,
       isSkillsEditable: false,
       isTraitsEditable: false
     };
+  },
+  created() {
+    this.modifiedSheet = this.character;
+    this.generalInfo = {
+      name: this.character.name,
+      race: this.character.race,
+      height: this.character.height,
+      age: this.character.age,
+      points: this.character.points,
+      money: this.character.money
+    };
+    this.attributes = this.character.attributes;
+  },
+  methods: {
+    updateGeneralInfo() {
+      this.isGeneralInfoEditable = false;
+
+      this.modifiedSheet.name = this.generalInfo.name;
+      this.modifiedSheet.race = this.generalInfo.race;
+      this.modifiedSheet.height = this.generalInfo.height;
+      this.modifiedSheet.age = this.generalInfo.age;
+      this.modifiedSheet.points = this.generalInfo.points;
+      this.modifiedSheet.money = this.generalInfo.money;
+
+      this.$emit("update-sheet", this.modifiedSheet);
+    },
+    updateAttributes() {
+      this.isAttributesEditable = false;
+
+      this.modifiedSheet.attributes = this.attributes;
+
+      this.$emit("update-sheet", this.modifiedSheet);
+    }
   }
 };
 </script>
 
-<style></style>
+<style>
+.theme--light.v-input.name-field input {
+  color: #5915c7;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+</style>

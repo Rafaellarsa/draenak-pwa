@@ -3,16 +3,28 @@
     <v-img src="@/assets/avatar-placeholder.gif" height="230"></v-img>
     <v-tabs-items v-model="currentTab" class="mb-4">
       <v-tab-item>
-        <MainInfo :character="character"></MainInfo>
+        <MainInfo
+          :character="characterSheet"
+          @update-sheet="onUpdateSheet"
+        ></MainInfo>
       </v-tab-item>
       <v-tab-item>
-        <Inventory :character="character"></Inventory>
+        <Inventory
+          :character="characterSheet"
+          @update-sheet="onUpdateSheet"
+        ></Inventory>
       </v-tab-item>
       <v-tab-item>
-        <Injuries :character="character"></Injuries>
+        <Injuries
+          :character="characterSheet"
+          @update-sheet="onUpdateSheet"
+        ></Injuries>
       </v-tab-item>
       <v-tab-item>
-        <Notes :character="character"></Notes>
+        <Notes
+          :character="characterSheet"
+          @update-sheet="onUpdateSheet"
+        ></Notes>
       </v-tab-item>
     </v-tabs-items>
     <v-footer padless app fixed>
@@ -27,6 +39,9 @@
 </template>
 
 <script>
+import firebase from "firebase/app";
+import "firebase/database";
+
 import MainInfo from "@/components/SheetTabs/MainInfo";
 import Inventory from "@/components/SheetTabs/Inventory";
 import Injuries from "@/components/SheetTabs/Injuries";
@@ -45,15 +60,57 @@ export default {
   },
   data() {
     return {
-      currentTab: null
+      currentTab: null,
+      characterSheet: null
     };
   },
-  methods: {}
+  mounted() {
+    this.characterSheet = this.character;
+  },
+  methods: {
+    onUpdateSheet(modifiedSheet) {
+      firebase
+        .database()
+        .ref(
+          "characterSheets/" +
+            this.$store.state.user.user.id +
+            "/" +
+            modifiedSheet.id
+        )
+        .update(modifiedSheet)
+        .then(() => {
+          this.getCharacterSheet();
+        })
+        .catch(error => {
+          console.log("Erro na atualização da ficha: " + error.message);
+          return "Erro na atualização da ficha: " + error.message;
+        });
+
+      // Caso tenha atualização da imagem pela atualização da ficha
+      // if(imageFile){
+      //     updateImageCharacterCard(imageFile,cardId);
+      // }
+    },
+    getCharacterSheet() {
+      firebase
+        .database()
+        .ref(
+          "characterSheets/" +
+            this.$store.state.user.user.id +
+            "/" +
+            this.character.id
+        )
+        .once("value", snapshot => {
+          this.characterSheet = snapshot.val();
+        });
+    }
+  }
 };
 </script>
 
 <style scoped>
 .v-image {
+  margin-top: -16px !important;
   margin-left: -12px !important;
   margin-right: -12px !important;
 }

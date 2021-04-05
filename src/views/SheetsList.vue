@@ -5,12 +5,9 @@
         <v-col v-for="(sheet, index) in sheets" :key="index" cols="12">
           <v-card color="white" @click="onClickSheet(sheet)">
             <div class="d-flex flex-no-wrap justify-space-between">
-              <!-- <v-avatar class="ma-3" size="48">
-                <v-img src="@/assets/default-user-image.png"></v-img>
-              </v-avatar> -->
               <v-img
                 src="@/assets/avatar-placeholder.gif"
-                height="127"
+                height="138"
                 width="95"
               ></v-img>
 
@@ -22,8 +19,11 @@
 
                 <v-card-text>
                   <div v-if="sheet.race">{{ sheet.race }}</div>
-                  <div v-if="sheet.age">{{ sheet.age + " anos" }}</div>
+                  <div v-else>Raça indefinida</div>
+                  <div v-if="sheet.age">{{ sheet.age }}</div>
+                  <div v-else>Idade indefinida</div>
                   <div v-if="sheet.party">{{ "Mesa: " + sheet.party }}</div>
+                  <div v-else>Mesa não escolhida</div>
                 </v-card-text>
               </div>
             </div>
@@ -108,5 +108,11 @@ export default {
 
 .v-card {
   border-radius: 15px !important;
+}
+
+.v-application .headline {
+  font-size: 1.125rem !important;
+  font-weight: 500 !important;
+  padding-bottom: 0 !important;
 }
 </style>

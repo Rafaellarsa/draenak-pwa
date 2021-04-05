@@ -3,7 +3,7 @@
     <div id="app">
       <div v-if="isLogged">
         <TopMenu v-if="this.$router.currentRoute.name !== 'settings'" />
-        <router-view class="mt-10"></router-view>
+        <router-view class="mt-14"></router-view>
       </div>
 
       <Login v-else />
@@ -16,7 +16,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" tile depressed @click="prompt = false">
+            <v-btn tile depressed @click="prompt = false">
               Cancelar
             </v-btn>
             <v-btn color="primary" tile depressed @click="update">

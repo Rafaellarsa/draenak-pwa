@@ -22,7 +22,7 @@
             <v-icon v-if="!isHistoryEditable" @click="isHistoryEditable = true"
               >mdi-pencil</v-icon
             >
-            <v-icon v-else @click="isHistoryEditable = false" color="primary"
+            <v-icon v-else @click="updateHistory()" color="primary"
               >mdi-check</v-icon
             >
           </v-row>
@@ -31,10 +31,10 @@
             color="#eeeeee"
             class="expansion-panel-content"
           >
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat.
+            <div v-if="!isHistoryEditable">
+              {{ this.modifiedSheet.history }}
+            </div>
+            <v-textarea v-else auto-grow v-model="history"></v-textarea>
           </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel class="ma-1 expansion-panel">
@@ -51,7 +51,7 @@
             <v-icon v-if="!isNotesEditable" @click="isNotesEditable = true"
               >mdi-pencil</v-icon
             >
-            <v-icon v-else @click="isNotesEditable = false" color="primary"
+            <v-icon v-else @click="updateNotes()" color="primary"
               >mdi-check</v-icon
             >
           </v-row>
@@ -60,10 +60,10 @@
             color="#eeeeee"
             class="expansion-panel-content"
           >
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat.
+            <div v-if="!isNotesEditable">
+              {{ this.modifiedSheet.notes }}
+            </div>
+            <v-textarea v-else auto-grow v-model="notes"></v-textarea>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
@@ -79,9 +79,29 @@ export default {
   },
   data() {
     return {
+      modifiedSheet: null,
       isHistoryEditable: false,
-      isNotesEditable: false
+      history: "",
+      isNotesEditable: false,
+      notes: ""
     };
+  },
+  created() {
+    this.modifiedSheet = this.character;
+    this.history = this.character.history;
+    this.notes = this.character.notes;
+  },
+  methods: {
+    updateHistory() {
+      this.isHistoryEditable = false;
+      this.modifiedSheet.history = this.history;
+      this.$emit("update-sheet", this.modifiedSheet);
+    },
+    updateNotes() {
+      this.isNotesEditable = false;
+      this.modifiedSheet.notes = this.notes;
+      this.$emit("update-sheet", this.modifiedSheet);
+    }
   }
 };
 </script>
