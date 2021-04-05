@@ -94,7 +94,7 @@
             class="expansion-panel-content"
           >
             <div
-              v-for="(attribute, index) in character.attributes"
+              v-for="(attribute, index) in modifiedSheet.attributes"
               :key="index"
             >
               {{ attribute.name + ": " + attribute.level }}
@@ -109,10 +109,7 @@
             color="#eeeeee"
             class="expansion-panel-content"
           >
-            <div
-              v-for="(attribute, index) in modifiedSheet.attributes"
-              :key="index"
-            >
+            <div v-for="(attribute, index) in attributes" :key="index">
               <v-text-field
                 dense
                 hide-details
@@ -143,16 +140,17 @@
             <v-icon v-if="!isSkillsEditable" @click="isSkillsEditable = true"
               >mdi-pencil</v-icon
             >
-            <v-icon v-else @click="isSkillsEditable = false" color="primary"
+            <v-icon v-else @click="updateSkills()" color="primary"
               >mdi-check</v-icon
             >
           </v-row>
 
           <v-expansion-panel-content
+            v-if="!isSkillsEditable"
             color="#eeeeee"
             class="expansion-panel-content"
           >
-            <div v-for="(skill, index) in character.skills" :key="index">
+            <div v-for="(skill, index) in modifiedSheet.skills" :key="index">
               {{ skill.name + ": " + skill.level }}
               <v-progress-linear
                 color="primary"
@@ -161,6 +159,40 @@
             </div>
             <div v-if="!character.skills">
               {{ character.name + " ainda não tem competências" }}
+            </div>
+          </v-expansion-panel-content>
+          <v-expansion-panel-content
+            v-else
+            color="#eeeeee"
+            class="expansion-panel-content"
+          >
+            <div v-for="(skill, index) in skills" :key="index">
+              <div style="display: flex">
+                <v-text-field
+                  dense
+                  hide-details
+                  :prefix="skill.name + ':'"
+                  v-model="skill.level"
+                ></v-text-field>
+                <v-btn class="mx-2 mb-1" fab x-small color="#DC2626">
+                  <v-icon color="#eeeeee" @click="removeSkill(index)">
+                    mdi-close
+                  </v-icon>
+                </v-btn>
+              </div>
+              <v-slider
+                v-model="skill.level"
+                track-color="#c4c4c4"
+                min="0"
+                max="20"
+              ></v-slider>
+            </div>
+            <div class="add-button">
+              <v-btn class="mx-2 mb-1" fab x-small color="primary">
+                <v-icon @click="isNewSkillDialogVisible = true">
+                  mdi-plus
+                </v-icon>
+              </v-btn>
             </div>
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -191,19 +223,30 @@
             <div v-for="(trait, index) in character.traits" :key="index">
               {{ trait.name }}
             </div>
-            <div v-if="!character.skills">
+            <div v-if="!character.traits">
               {{ character.name + " ainda não tem traços" }}
             </div>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
     </v-row>
+
+    <NewSkillDialog
+      :isDialogVisible="isNewSkillDialogVisible"
+      @create-new-skill="onCreateNewSkill"
+      @close-dialog="isNewSkillDialogVisible = false"
+    ></NewSkillDialog>
   </v-col>
 </template>
 
 <script>
+import NewSkillDialog from "@/components/Dialogs/NewSkillDialog";
+
 export default {
   name: "MainInfo",
+  components: {
+    NewSkillDialog
+  },
   props: {
     character: Object
   },
@@ -220,9 +263,11 @@ export default {
         money: ""
       },
       isAttributesEditable: false,
-      attributes: null,
+      attributes: [],
       isSkillsEditable: false,
-      isTraitsEditable: false
+      skills: [],
+      isTraitsEditable: false,
+      isNewSkillDialogVisible: false
     };
   },
   created() {
@@ -236,6 +281,9 @@ export default {
       money: this.character.money
     };
     this.attributes = this.character.attributes;
+    if (this.character.skills) {
+      this.skills = this.character.skills;
+    }
   },
   methods: {
     updateGeneralInfo() {
@@ -256,6 +304,19 @@ export default {
       this.modifiedSheet.attributes = this.attributes;
 
       this.$emit("update-sheet", this.modifiedSheet);
+    },
+    updateSkills() {
+      this.isSkillsEditable = false;
+
+      this.modifiedSheet.skills = this.skills;
+
+      this.$emit("update-sheet", this.modifiedSheet);
+    },
+    onCreateNewSkill(newSkill) {
+      this.skills.push(newSkill);
+    },
+    removeSkill(index) {
+      this.skills.splice(index, 1);
     }
   }
 };
@@ -266,5 +327,10 @@ export default {
   color: #5915c7;
   font-size: 1.5rem;
   font-weight: bold;
+}
+
+.add-button {
+  display: flex;
+  justify-content: center;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="isVisible" max-width="500">
     <v-card>
-      <v-card-title> Nova Personagem </v-card-title>
+      <v-card-title>Nova Personagem</v-card-title>
       <v-card-text>
         <v-text-field
           class="custom-placeholder"

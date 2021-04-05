@@ -141,4 +141,8 @@ p {
 .v-tabs-items {
   background-color: #eeeeee !important;
 }
+
+.v-slider {
+  margin: 0 !important;
+}
 </style>
