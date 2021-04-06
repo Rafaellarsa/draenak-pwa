@@ -53,7 +53,7 @@ import firebase from "firebase/app";
 import "firebase/database";
 
 import CharacterSheet from "@/components/CharacterSheet";
-import NewSheetDialog from "@/components/NewSheetDialog";
+import NewSheetDialog from "@/components/Dialogs/NewSheetDialog";
 
 export default {
   name: "SheetsList",

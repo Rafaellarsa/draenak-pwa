@@ -41,19 +41,42 @@
         </v-expansion-panel>
       </v-expansion-panels>
     </v-row>
+
+    <MessageDialog
+      :is-dialog-visible="isMessageDialogVisible"
+      title="Inventório"
+      message="Para adicionar ou editar itens, clique no botão de editar"
+      buttonText="Okay"
+      @close-dialog="isMessageDialogVisible = false"
+    ></MessageDialog>
   </v-col>
 </template>
 
 <script>
+import MessageDialog from "@/components/Dialogs/MessageDialog";
+
 export default {
   name: "Inventory",
+  components: {
+    MessageDialog
+  },
   props: {
     character: Object
   },
   data() {
     return {
-      isInventoryEditable: false
+      modifiedSheet: null,
+      isInventoryEditable: false,
+      inventory: [],
+      // isNewInjuryDialogVisible: false,
+      isMessageDialogVisible: false
     };
+  },
+  created() {
+    this.modifiedSheet = this.character;
+    if (this.character.inventory) {
+      this.inventory = this.character.inventory;
+    }
   }
 };
 </script>

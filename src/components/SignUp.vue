@@ -49,7 +49,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/database";
 
-import MessageDialog from "@/components/MessageDialog";
+import MessageDialog from "@/components/Dialogs/MessageDialog";
 
 export default {
   name: "SignUp",

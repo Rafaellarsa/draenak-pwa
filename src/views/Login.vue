@@ -54,8 +54,8 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 
-import ForgotPasswordDialog from "@/components/ForgotPasswordDialog";
-import MessageDialog from "@/components/MessageDialog";
+import ForgotPasswordDialog from "@/components/Dialogs/ForgotPasswordDialog";
+import MessageDialog from "@/components/Dialogs/MessageDialog";
 import SignUp from "@/components/SignUp";
 
 export default {

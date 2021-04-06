@@ -29,10 +29,28 @@
     </v-tabs-items>
     <v-footer padless app fixed>
       <v-tabs v-model="currentTab" grow background-color="#eeeeee">
-        <v-tab>1</v-tab>
-        <v-tab>2</v-tab>
-        <v-tab>3</v-tab>
-        <v-tab>4</v-tab>
+        <v-tab>
+          <img alt="Avatar" width="33" height="33" src="@/assets/avatar.svg" />
+        </v-tab>
+        <v-tab>
+          <img
+            alt="Mochila"
+            width="30"
+            height="30"
+            src="@/assets/backpack.svg"
+          />
+        </v-tab>
+        <v-tab>
+          <img
+            alt="Curativo"
+            width="33"
+            height="33"
+            src="@/assets/bandaid.svg"
+          />
+        </v-tab>
+        <v-tab>
+          <img alt="Livro" width="30" height="30" src="@/assets/book.svg" />
+        </v-tab>
       </v-tabs>
     </v-footer>
   </v-container>

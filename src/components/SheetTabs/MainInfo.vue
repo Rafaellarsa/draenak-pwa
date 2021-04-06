@@ -157,8 +157,11 @@
                 :value="skill.level * 5"
               ></v-progress-linear>
             </div>
-            <div v-if="!character.skills">
-              {{ character.name + " ainda não tem competências" }}
+            <div class="empty-string" v-if="!modifiedSheet.skills">
+              {{ modifiedSheet.name + " ainda não tem competências" }}
+              <v-btn icon color="#9a9a9a" @click="showEmptySkillsDialog()"
+                ><v-icon>mdi-information-outline</v-icon></v-btn
+              >
             </div>
           </v-expansion-panel-content>
           <v-expansion-panel-content
@@ -220,16 +223,27 @@
             color="#eeeeee"
             class="expansion-panel-content"
           >
-            <div v-for="(trait, index) in character.traits" :key="index">
+            <div v-for="(trait, index) in modifiedSheet.traits" :key="index">
               {{ trait.name }}
             </div>
-            <div v-if="!character.traits">
-              {{ character.name + " ainda não tem traços" }}
+            <div class="empty-string" v-if="!modifiedSheet.traits">
+              {{ modifiedSheet.name + " ainda não tem traços" }}
+              <v-btn icon color="#9a9a9a" @click="showEmptyTraitsDialog()"
+                ><v-icon>mdi-information-outline</v-icon></v-btn
+              >
             </div>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
     </v-row>
+
+    <MessageDialog
+      :is-dialog-visible="messageDialog.isVisible"
+      :title="messageDialog.title"
+      :message="messageDialog.message"
+      buttonText="Okay"
+      @close-dialog="messageDialog.isVisible = false"
+    ></MessageDialog>
 
     <NewSkillDialog
       :isDialogVisible="isNewSkillDialogVisible"
@@ -240,11 +254,13 @@
 </template>
 
 <script>
+import MessageDialog from "@/components/Dialogs/MessageDialog";
 import NewSkillDialog from "@/components/Dialogs/NewSkillDialog";
 
 export default {
   name: "MainInfo",
   components: {
+    MessageDialog,
     NewSkillDialog
   },
   props: {
@@ -267,7 +283,12 @@ export default {
       isSkillsEditable: false,
       skills: [],
       isTraitsEditable: false,
-      isNewSkillDialogVisible: false
+      isNewSkillDialogVisible: false,
+      messageDialog: {
+        isVisible: false,
+        title: "",
+        message: ""
+      }
     };
   },
   created() {
@@ -317,6 +338,21 @@ export default {
     },
     removeSkill(index) {
       this.skills.splice(index, 1);
+    },
+    showEmptyTraitsDialog() {
+      this.messageDialog = {
+        isVisible: true,
+        title: "Traços",
+        message: "Para adicionar ou editar traços, clique no botão de editar"
+      };
+    },
+    showEmptySkillsDialog() {
+      this.messageDialog = {
+        isVisible: true,
+        title: "Competências",
+        message:
+          "Para adicionar ou editar competências, clique no botão de editar"
+      };
     }
   }
 };
@@ -332,5 +368,13 @@ export default {
 .add-button {
   display: flex;
   justify-content: center;
+}
+
+.empty-string {
+  color: #9a9a9a;
+  font-style: italic;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

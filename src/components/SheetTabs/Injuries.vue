@@ -41,8 +41,11 @@
                 :value="injury.level * 20"
               ></v-progress-linear>
             </div>
-            <div v-if="!character.injuries">
-              {{ character.name + " não tem ferimentos" }}
+            <div class="empty-string" v-if="!modifiedSheet.injuries">
+              {{ modifiedSheet.name + " não tem ferimentos" }}
+              <v-btn icon color="#9a9a9a" @click="isMessageDialogVisible = true"
+                ><v-icon>mdi-information-outline</v-icon></v-btn
+              >
             </div>
           </v-expansion-panel-content>
           <v-expansion-panel-content
@@ -83,6 +86,14 @@
       </v-expansion-panels>
     </v-row>
 
+    <MessageDialog
+      :is-dialog-visible="isMessageDialogVisible"
+      title="Ferimentos"
+      message="Para adicionar ou editar ferimentos, clique no botão de editar"
+      buttonText="Okay"
+      @close-dialog="isMessageDialogVisible = false"
+    ></MessageDialog>
+
     <NewInjuryDialog
       :isDialogVisible="isNewInjuryDialogVisible"
       @create-new-injury="onCreateNewInjury"
@@ -92,11 +103,13 @@
 </template>
 
 <script>
+import MessageDialog from "@/components/Dialogs/MessageDialog";
 import NewInjuryDialog from "@/components/Dialogs/NewInjuryDialog";
 
 export default {
   name: "Injuries",
   components: {
+    MessageDialog,
     NewInjuryDialog
   },
   props: {
@@ -107,7 +120,8 @@ export default {
       modifiedSheet: null,
       isInjuriesEditable: false,
       injuries: [],
-      isNewInjuryDialogVisible: false
+      isNewInjuryDialogVisible: false,
+      isMessageDialogVisible: false
     };
   },
   created() {

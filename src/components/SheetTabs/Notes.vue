@@ -2,7 +2,7 @@
   <v-col>
     <v-row no-gutters>
       <h2>
-        {{ character.name }}
+        {{ modifiedSheet.name }}
       </h2>
     </v-row>
 
@@ -33,6 +33,12 @@
           >
             <div v-if="!isHistoryEditable">
               {{ this.modifiedSheet.history }}
+              <div class="empty-string" v-if="!modifiedSheet.history">
+                {{ modifiedSheet.name + " ainda não tem história" }}
+                <v-btn icon color="#9a9a9a" @click="showEmptyHistoryDialog()"
+                  ><v-icon>mdi-information-outline</v-icon></v-btn
+                >
+              </div>
             </div>
             <v-textarea v-else auto-grow v-model="history"></v-textarea>
           </v-expansion-panel-content>
@@ -62,18 +68,37 @@
           >
             <div v-if="!isNotesEditable">
               {{ this.modifiedSheet.notes }}
+              <div class="empty-string" v-if="!modifiedSheet.notes">
+                {{ modifiedSheet.name + " ainda não tem anotações" }}
+                <v-btn icon color="#9a9a9a" @click="showEmptyNotesDialog()"
+                  ><v-icon>mdi-information-outline</v-icon></v-btn
+                >
+              </div>
             </div>
             <v-textarea v-else auto-grow v-model="notes"></v-textarea>
           </v-expansion-panel-content>
         </v-expansion-panel>
       </v-expansion-panels>
     </v-row>
+
+    <MessageDialog
+      :is-dialog-visible="messageDialog.isVisible"
+      :title="messageDialog.title"
+      :message="messageDialog.message"
+      buttonText="Okay"
+      @close-dialog="messageDialog.isVisible = false"
+    ></MessageDialog>
   </v-col>
 </template>
 
 <script>
+import MessageDialog from "@/components/Dialogs/MessageDialog";
+
 export default {
   name: "Notes",
+  components: {
+    MessageDialog
+  },
   props: {
     character: Object
   },
@@ -83,7 +108,12 @@ export default {
       isHistoryEditable: false,
       history: "",
       isNotesEditable: false,
-      notes: ""
+      notes: "",
+      messageDialog: {
+        isVisible: false,
+        title: "",
+        message: ""
+      }
     };
   },
   created() {
@@ -101,6 +131,21 @@ export default {
       this.isNotesEditable = false;
       this.modifiedSheet.notes = this.notes;
       this.$emit("update-sheet", this.modifiedSheet);
+    },
+    showEmptyHistoryDialog() {
+      this.messageDialog = {
+        isVisible: true,
+        title: "História",
+        message:
+          "Para adicionar ou editar a história, clique no botão de editar"
+      };
+    },
+    showEmptyNotesDialog() {
+      this.messageDialog = {
+        isVisible: true,
+        title: "Anotações",
+        message: "Para adicionar ou editar anotações, clique no botão de editar"
+      };
     }
   }
 };
