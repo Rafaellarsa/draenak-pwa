@@ -214,23 +214,61 @@
             <v-icon v-if="!isTraitsEditable" @click="isTraitsEditable = true"
               >mdi-pencil</v-icon
             >
-            <v-icon v-else @click="isTraitsEditable = false" color="primary"
+            <v-icon v-else @click="updateTraits()" color="primary"
               >mdi-check</v-icon
             >
           </v-row>
 
           <v-expansion-panel-content
+            v-if="!isTraitsEditable"
             color="#eeeeee"
             class="expansion-panel-content"
           >
             <div v-for="(trait, index) in modifiedSheet.traits" :key="index">
               {{ trait.name }}
+              <div class="description">
+                {{ truncateDescription(trait.description) }}
+              </div>
             </div>
             <div class="empty-string" v-if="!modifiedSheet.traits">
               {{ modifiedSheet.name + " ainda não tem traços" }}
               <v-btn icon color="#9a9a9a" @click="showEmptyTraitsDialog()"
                 ><v-icon>mdi-information-outline</v-icon></v-btn
               >
+            </div>
+          </v-expansion-panel-content>
+          <v-expansion-panel-content
+            v-else
+            color="#eeeeee"
+            class="expansion-panel-content"
+          >
+            <div v-for="(trait, index) in traits" :key="index">
+              <div style="display: flex">
+                <v-text-field
+                  dense
+                  hide-details
+                  label="Nome"
+                  v-model="trait.name"
+                ></v-text-field>
+                <v-btn fab x-small color="#DC2626">
+                  <v-icon color="#eeeeee" @click="removeTrait(index)">
+                    mdi-close
+                  </v-icon>
+                </v-btn>
+              </div>
+              <div class="description">
+                <v-textarea
+                  v-model="trait.description"
+                  label="Descrição"
+                ></v-textarea>
+              </div>
+            </div>
+            <div class="add-button">
+              <v-btn class="mx-2 mb-1" fab x-small color="primary">
+                <v-icon @click="isNewTraitDialogVisible = true">
+                  mdi-plus
+                </v-icon>
+              </v-btn>
             </div>
           </v-expansion-panel-content>
         </v-expansion-panel>
@@ -250,18 +288,26 @@
       @create-new-skill="onCreateNewSkill"
       @close-dialog="isNewSkillDialogVisible = false"
     ></NewSkillDialog>
+
+    <NewTraitDialog
+      :isDialogVisible="isNewTraitDialogVisible"
+      @create-new-trait="onCreateNewTrait"
+      @close-dialog="isNewTraitDialogVisible = false"
+    ></NewTraitDialog>
   </v-col>
 </template>
 
 <script>
 import MessageDialog from "@/components/Dialogs/MessageDialog";
 import NewSkillDialog from "@/components/Dialogs/NewSkillDialog";
+import NewTraitDialog from "@/components/Dialogs/NewTraitDialog";
 
 export default {
   name: "MainInfo",
   components: {
     MessageDialog,
-    NewSkillDialog
+    NewSkillDialog,
+    NewTraitDialog
   },
   props: {
     character: Object
@@ -283,7 +329,9 @@ export default {
       isSkillsEditable: false,
       skills: [],
       isTraitsEditable: false,
+      traits: [],
       isNewSkillDialogVisible: false,
+      isNewTraitDialogVisible: false,
       messageDialog: {
         isVisible: false,
         title: "",
@@ -339,6 +387,19 @@ export default {
     removeSkill(index) {
       this.skills.splice(index, 1);
     },
+    updateTraits() {
+      this.isTraitsEditable = false;
+
+      this.modifiedSheet.traits = this.traits;
+
+      this.$emit("update-sheet", this.modifiedSheet);
+    },
+    onCreateNewTrait(newTrait) {
+      this.traits.push(newTrait);
+    },
+    removeTrait(index) {
+      this.traits.splice(index, 1);
+    },
     showEmptyTraitsDialog() {
       this.messageDialog = {
         isVisible: true,
@@ -353,6 +414,13 @@ export default {
         message:
           "Para adicionar ou editar competências, clique no botão de editar"
       };
+    },
+    truncateDescription(description) {
+      if (description.length > 36) {
+        return description.slice(0, 36) + "...";
+      } else {
+        return description;
+      }
     }
   }
 };

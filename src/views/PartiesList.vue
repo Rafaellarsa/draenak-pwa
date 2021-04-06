@@ -6,7 +6,7 @@
           <v-card color="white" @click="onClickParty(party)">
             <div class="d-flex flex-no-wrap justify-space-between">
               <v-avatar class="ma-3" size="48">
-                <v-img src="@/assets/default-user-image.png"></v-img>
+                <v-img src="@/assets/avatar-placeholder.gif"></v-img>
               </v-avatar>
 
               <div style="width: 80%">
