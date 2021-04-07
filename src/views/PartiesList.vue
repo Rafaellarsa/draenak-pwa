@@ -6,7 +6,7 @@
           <v-card color="white" @click="onClickParty(party)">
             <div class="d-flex flex-no-wrap justify-space-between">
               <v-avatar class="ma-3" size="48">
-                <v-img src="@/assets/default-user-image.png"></v-img>
+                <v-img src="@/assets/avatar-placeholder.gif"></v-img>
               </v-avatar>
 
               <div style="width: 80%">
@@ -33,7 +33,8 @@
       </v-icon>
     </v-btn>
   </v-container>
-
+  <CharacterParties v-else :character="selectedParty" />
+<!--
   <v-container v-else>
     <v-toolbar flat>
       <v-icon @click="selectedParty = null">mdi-arrow-left</v-icon>
@@ -58,12 +59,18 @@
       </v-expansion-panels>
     </v-row>
   </v-container>
+  -->
 </template>
 
 <script>
+
+import CharacterParties from "@/components/CharacterParties";
+
 export default {
   name: "PartiesList",
-  components: {},
+  components: {
+    CharacterParties
+  },
   data() {
     return {
       color: "#209898",
@@ -71,24 +78,28 @@ export default {
         {
           name: "Rolezinho virtual",
           theme: "Fantasia Medieval",
+          master: "Vittinho do SUS",
           quantity: 2,
           points: 120
         },
         {
           name: "Nightcity",
           theme: "Cyberpunk",
+          master: "Moranguinho Candelabro",
           quantity: 3,
           points: 200
         },
         {
           name: "Castelo Ratibum",
           theme: "Fantasia",
+          master: "Maraena Madalena",
           quantity: 4,
           points: 135
         },
         {
           name: "Terra Média",
           theme: "Alta fantasia",
+          master: "Jodoca Aloma",
           quantity: 4,
           points: 230
         }
