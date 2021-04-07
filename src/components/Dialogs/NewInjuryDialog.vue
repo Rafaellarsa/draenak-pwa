@@ -25,7 +25,7 @@
 
 <script>
 export default {
-  name: "NewSheetDialog",
+  name: "NewInjuryDialog",
   props: {
     isDialogVisible: Boolean
   },

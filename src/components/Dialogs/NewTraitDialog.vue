@@ -1,21 +1,21 @@
 <template>
   <v-dialog v-model="isVisible" max-width="500">
     <v-card>
-      <v-card-title>Nova Competência</v-card-title>
+      <v-card-title>Novo Item</v-card-title>
       <v-card-text>
         <v-text-field
           class="custom-placeholder"
-          label="Nome da Competência"
+          label="Nome do Traço"
           v-model="name"
           required
         ></v-text-field>
-        <v-text-field
-          class="custom-placeholder pt-0"
-          label="Pontos Gastos por Nível"
-          v-model="cost"
-          type="number"
+        <v-textarea
+          class="custom-placeholder"
+          label="Descrição do Traço"
+          v-model="description"
           required
-        ></v-text-field>
+        >
+        </v-textarea>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -32,14 +32,14 @@
 
 <script>
 export default {
-  name: "NewSkillDialog",
+  name: "NewTraitDialog",
   props: {
     isDialogVisible: Boolean
   },
   data() {
     return {
       name: "",
-      cost: null,
+      description: "",
       isVisible: false
     };
   },
@@ -60,13 +60,12 @@ export default {
     onClickCreateButton() {
       this.isVisible = false;
 
-      const newSkill = {
+      const newTrait = {
         name: this.name,
-        cost: this.cost,
-        level: 0
+        description: this.description
       };
 
-      this.$emit("create-new-skill", newSkill);
+      this.$emit("create-new-trait", newTrait);
     }
   }
 };
