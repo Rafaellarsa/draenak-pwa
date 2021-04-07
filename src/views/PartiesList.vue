@@ -3,11 +3,13 @@
     <v-container>
       <v-row dense>
         <v-col v-for="(party, index) in parties" :key="index" cols="12">
-          <v-card color="white" @click="onClickParty(party)">
+          <v-card color="#F8F3F3" @click="onClickParty(party)">
             <div class="d-flex flex-no-wrap justify-space-between">
-              <v-avatar class="ma-3" size="48">
-                <v-img src="@/assets/avatar-placeholder.gif"></v-img>
-              </v-avatar>
+              <v-img
+                src="@/assets/avatar-placeholder.gif"
+                height="138"
+                width="95"
+              ></v-img>
 
               <div style="width: 80%">
                 <v-card-title
@@ -27,48 +29,39 @@
       </v-row>
     </v-container>
 
-    <v-btn class="mx-2 mb-1" fab small fixed bottom right color="secondary">
+    <v-btn
+      @click="isDialogVisible = true"
+      class="mx-2 mb-1"
+      fab
+      small
+      fixed
+      bottom
+      right
+      color="secondary"
+    >
       <v-icon>
         mdi-plus
       </v-icon>
     </v-btn>
-  </v-container>
-  <CharacterParties v-else :character="selectedParty" />
-  <!--
-  <v-container v-else>
-    <v-toolbar flat>
-      <v-icon @click="selectedParty = null">mdi-arrow-left</v-icon>
-      <v-spacer></v-spacer>
-    </v-toolbar>
-    <h1>{{ selectedParty.name }}</h1>
-    <h2>{{ selectedParty.quantity }}</h2>
 
-    <v-row justify="center" class="ma-0">
-      <v-expansion-panels>
-        <v-expansion-panel v-for="(item, i) in 5" :key="i" class="ma-1">
-          <v-expansion-panel-header :color="color"
-            >Item</v-expansion-panel-header
-          >
-          <v-expansion-panel-content>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat.
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
-    </v-row>
+    <NewPartyDialog
+      :is-dialog-visible="isDialogVisible"
+      @close-dialog="isDialogVisible = false"
+    ></NewPartyDialog>
+    <!-- @update-parties-list="getSheetsList()" -->
   </v-container>
-  -->
+  <Party v-else :party="selectedParty" />
 </template>
 
 <script>
-import CharacterParties from "@/components/CharacterParties";
+import Party from "@/components/Party";
+import NewPartyDialog from "@/components/Dialogs/NewPartyDialog";
 
 export default {
   name: "PartiesList",
   components: {
-    CharacterParties
+    Party,
+    NewPartyDialog
   },
   data() {
     return {
@@ -103,7 +96,8 @@ export default {
           points: 230
         }
       ],
-      selectedParty: null
+      selectedParty: null,
+      isDialogVisible: false
     };
   },
   methods: {
@@ -117,5 +111,20 @@ export default {
 <style scoped>
 h1 {
   color: #209898;
+}
+
+.v-image {
+  border-top-left-radius: 15px !important;
+  border-bottom-left-radius: 15px !important;
+}
+
+.v-card {
+  border-radius: 15px !important;
+}
+
+.v-application .headline {
+  font-size: 1.125rem !important;
+  font-weight: 500 !important;
+  padding-bottom: 0 !important;
 }
 </style>

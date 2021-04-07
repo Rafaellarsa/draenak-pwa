@@ -39,8 +39,17 @@
       </v-row>
     </v-container>
 
-    <v-btn class="mx-2 mb-1" fab small fixed bottom right color="primary">
-      <v-icon @click="onClickNewSheet()">
+    <v-btn
+      @click="onClickNewSheet()"
+      class="mx-2 mb-1"
+      fab
+      small
+      fixed
+      bottom
+      right
+      color="primary"
+    >
+      <v-icon>
         mdi-plus
       </v-icon>
     </v-btn>

@@ -3,10 +3,10 @@
     <v-img src="@/assets/avatar-placeholder.gif" height="230"></v-img>
     <v-tabs-items v-model="currentTab" class="mb-4">
       <v-tab-item>
-        <Setting :character="characterParties"></Setting>
+        <Settings :party="party"></Settings>
       </v-tab-item>
       <v-tab-item>
-        <PartiesSheets :character="characterParties"></PartiesSheets>
+        <PartySheets :party="party"></PartySheets>
       </v-tab-item>
     </v-tabs-items>
     <v-btn class="mx-1 mb-11" fab small fixed bottom right color="secondary">
@@ -15,7 +15,6 @@
       </v-icon>
     </v-btn>
 
-    <!--Footer-->
     <v-footer padless app fixed>
       <v-tabs
         v-model="currentTab"
@@ -39,17 +38,17 @@
   </v-container>
 </template>
 <script>
-import PartiesSheets from "@/components/PartiesTabs/PartiesSheets";
-import Setting from "@/components/PartiesTabs/Setting";
+import PartySheets from "@/components/PartyTabs/PartySheets";
+import Settings from "@/components/PartyTabs/Settings";
 
 export default {
-  name: "CharacterParties",
+  name: "Party",
   components: {
-    PartiesSheets,
-    Setting
+    PartySheets,
+    Settings
   },
   props: {
-    character: Object
+    party: Object
   },
   data() {
     return {
@@ -64,6 +63,10 @@ export default {
 </script>
 
 <style scoped>
+h2 {
+  color: #209898;
+}
+
 .v-image {
   margin-top: -16px !important;
   margin-left: -12px !important;
@@ -75,10 +78,6 @@ export default {
 }
 </style>
 <style>
-h2 {
-  color: #209898;
-}
-
 p {
   line-height: 18.75px;
 }

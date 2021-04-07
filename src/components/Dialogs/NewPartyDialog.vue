@@ -1,12 +1,18 @@
 <template>
   <v-dialog v-model="isVisible" max-width="500">
     <v-card>
-      <v-card-title>Nova Personagem</v-card-title>
+      <v-card-title>Nova Mesa</v-card-title>
       <v-card-text>
         <v-text-field
           class="custom-placeholder"
-          label="Nome da Personagem"
+          label="Nome da Mesa"
           v-model="name"
+          required
+        ></v-text-field>
+        <v-text-field
+          class="custom-placeholder pt-0"
+          label="Tema"
+          v-model="theme"
           required
         ></v-text-field>
         <v-text-field
@@ -16,11 +22,6 @@
           v-model="points"
           required
         ></v-text-field>
-        <v-select
-          label="Mesa"
-          no-data-text="Não há mesas disponíveis"
-          dense
-        ></v-select>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -40,13 +41,14 @@ import firebase from "firebase/app";
 import "firebase/database";
 
 export default {
-  name: "NewSheetDialog",
+  name: "NewPartyDialog",
   props: {
     isDialogVisible: Boolean
   },
   data() {
     return {
       name: "",
+      theme: "",
       points: null,
       isVisible: false
     };
@@ -102,7 +104,7 @@ export default {
           if (error) {
             console.log("Erro no cadastro da ficha: " + error.message);
           }
-          this.$emit("update-parties-list");
+          this.$emit("update-sheets-list");
         });
     }
   }
