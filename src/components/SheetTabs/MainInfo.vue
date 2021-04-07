@@ -1,5 +1,25 @@
 <template>
   <v-col>
+    <input
+      @change="onImageChange"
+      type="file"
+      id="image"
+      style="display: none"
+    />
+    <v-btn
+      v-if="isGeneralInfoEditable"
+      absolute
+      right
+      class="mr-8 edit-photo-button"
+      @click="onClickImageButton()"
+      fab
+      small
+      color="primary"
+    >
+      <v-icon>
+        mdi-camera
+      </v-icon>
+    </v-btn>
     <v-row no-gutters>
       <h2 v-if="!isGeneralInfoEditable">
         {{ modifiedSheet.name }}
@@ -336,7 +356,8 @@ export default {
         isVisible: false,
         title: "",
         message: ""
-      }
+      },
+      imageURL: ""
     };
   },
   created() {
@@ -358,6 +379,7 @@ export default {
     updateGeneralInfo() {
       this.isGeneralInfoEditable = false;
 
+      this.modifiedSheet.characterImageURL = this.imageURL;
       this.modifiedSheet.name = this.generalInfo.name;
       this.modifiedSheet.race = this.generalInfo.race;
       this.modifiedSheet.height = this.generalInfo.height;
@@ -421,6 +443,14 @@ export default {
       } else {
         return description;
       }
+    },
+    onClickImageButton() {
+      document.getElementById("image").click();
+    },
+    onImageChange(e) {
+      const image = e.target.files[0];
+      this.imageURL = URL.createObjectURL(image);
+      this.$emit("on-image-change", image);
     }
   }
 };

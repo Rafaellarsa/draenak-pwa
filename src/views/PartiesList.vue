@@ -34,7 +34,7 @@
     </v-btn>
   </v-container>
   <CharacterParties v-else :character="selectedParty" />
-<!--
+  <!--
   <v-container v-else>
     <v-toolbar flat>
       <v-icon @click="selectedParty = null">mdi-arrow-left</v-icon>
@@ -63,7 +63,6 @@
 </template>
 
 <script>
-
 import CharacterParties from "@/components/CharacterParties";
 
 export default {

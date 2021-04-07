@@ -3,9 +3,16 @@
     <v-container>
       <v-row dense>
         <v-col v-for="(sheet, index) in sheets" :key="index" cols="12">
-          <v-card color="white" @click="onClickSheet(sheet)">
+          <v-card color="#F8F3F3" @click="onClickSheet(sheet)">
             <div class="d-flex flex-no-wrap justify-space-between">
               <v-img
+                v-if="sheet.characterImageURL"
+                :src="sheet.characterImageURL"
+                height="138"
+                width="95"
+              ></v-img>
+              <v-img
+                v-else
                 src="@/assets/avatar-placeholder.gif"
                 height="138"
                 width="95"

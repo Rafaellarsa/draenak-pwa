@@ -1,11 +1,18 @@
 <template>
   <v-container>
-    <v-img src="@/assets/avatar-placeholder.gif" height="230"></v-img>
+    <v-img v-if="imageURL" :src="imageURL" height="230"></v-img>
+    <v-img
+      v-else-if="this.character.characterImageURL"
+      :src="this.character.characterImageURL"
+      height="230"
+    ></v-img>
+    <v-img v-else src="@/assets/avatar-placeholder.gif" height="230"></v-img>
     <v-tabs-items v-model="currentTab" class="mb-4">
       <v-tab-item>
         <MainInfo
           :character="characterSheet"
           @update-sheet="onUpdateSheet"
+          @on-image-change="image = arguments[0]"
         ></MainInfo>
       </v-tab-item>
       <v-tab-item>
@@ -59,6 +66,7 @@
 <script>
 import firebase from "firebase/app";
 import "firebase/database";
+import "firebase/storage";
 
 import MainInfo from "@/components/SheetTabs/MainInfo";
 import Inventory from "@/components/SheetTabs/Inventory";
@@ -79,8 +87,18 @@ export default {
   data() {
     return {
       currentTab: null,
-      characterSheet: null
+      characterSheet: null,
+      image: null
     };
+  },
+  computed: {
+    imageURL() {
+      if (this.image) {
+        return URL.createObjectURL(this.image);
+      } else {
+        return "";
+      }
+    }
   },
   mounted() {
     this.characterSheet = this.character;
@@ -104,10 +122,9 @@ export default {
           return "Erro na atualização da ficha: " + error.message;
         });
 
-      // Caso tenha atualização da imagem pela atualização da ficha
-      // if(imageFile){
-      //     updateImageCharacterCard(imageFile,cardId);
-      // }
+      if (modifiedSheet.characterImageURL) {
+        this.updateImageCharacterCard(this.image);
+      }
     },
     getCharacterSheet() {
       firebase
@@ -120,6 +137,69 @@ export default {
         )
         .once("value", snapshot => {
           this.characterSheet = snapshot.val();
+        });
+    },
+    updateImageCharacterCard(imageFile) {
+      // Verifica tamanho da imagem(bytes)
+      if (imageFile.size > 10485760) {
+        console.log("Imagem maior que 10MB");
+      }
+      // Verifica tipo da imagem
+      var validImageTypes = ["image/gif", "image/jpeg", "image/png"];
+      if (!validImageTypes.includes(imageFile.type)) {
+        console.log("É apenas permitido imagens do tipo GIF, JPEG e PNG");
+      }
+
+      // Montagem dos dados para a imagem no Firebase Storage
+      var fileType = imageFile.name.substring(
+        imageFile.name.lastIndexOf(".") + 1
+      );
+      var updateStorageRef = firebase
+        .storage()
+        .ref(
+          "card_images/" +
+            this.$store.state.user.user.id +
+            "/" +
+            this.character.id +
+            "/" +
+            "characterImage." +
+            fileType
+        );
+
+      // Grava/Atualiza imagem no Storage
+      updateStorageRef
+        .put(imageFile)
+        .then(() => {
+          console.log("entrei aqui");
+          // Recebe o link da imagem gravada no Storage e atualiza no RealTime
+          updateStorageRef
+            .getDownloadURL()
+            .then(url => {
+              console.log(url);
+              firebase
+                .database()
+                .ref(
+                  "characterSheets/" +
+                    this.$store.state.user.user.id +
+                    "/" +
+                    this.character.id
+                )
+                .update({
+                  characterImageURL: url
+                });
+            })
+            .catch(error => {
+              console.log(
+                "Erro na gravação/atualização da imagem: " + error.message
+              );
+            });
+
+          console.log("Imagem gravada/atualizada com sucesso");
+        })
+        .catch(error => {
+          console.log(
+            "Erro na gravação/atualização da imagem: " + error.message
+          );
         });
     }
   }
