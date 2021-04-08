@@ -93,6 +93,15 @@
         return-object
         dense
       ></v-select>
+      <v-btn
+        color="red"
+        block
+        dark
+        @click="isRemoveElementDialogVisible = true"
+        depressed
+        tile
+        >Apagar ficha</v-btn
+      >
     </p>
     <v-row justify="center" no-gutters>
       <v-expansion-panels flat>
@@ -311,6 +320,13 @@
       @close-dialog="messageDialog.isVisible = false"
     ></MessageDialog>
 
+    <RemoveElementDialog
+      :isDialogVisible="isRemoveElementDialogVisible"
+      :isParty="false"
+      :id="character.id"
+      @close-dialog="isRemoveElementDialogVisible = false"
+    ></RemoveElementDialog>
+
     <NewSkillDialog
       :isDialogVisible="isNewSkillDialogVisible"
       @create-new-skill="onCreateNewSkill"
@@ -327,6 +343,7 @@
 
 <script>
 import MessageDialog from "@/components/Dialogs/MessageDialog";
+import RemoveElementDialog from "@/components/Dialogs/RemoveElementDialog";
 import NewSkillDialog from "@/components/Dialogs/NewSkillDialog";
 import NewTraitDialog from "@/components/Dialogs/NewTraitDialog";
 
@@ -334,6 +351,7 @@ export default {
   name: "MainInfo",
   components: {
     MessageDialog,
+    RemoveElementDialog,
     NewSkillDialog,
     NewTraitDialog
   },
@@ -367,6 +385,7 @@ export default {
         title: "",
         message: ""
       },
+      isRemoveElementDialogVisible: false,
       imageURL: ""
     };
   },

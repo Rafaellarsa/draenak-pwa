@@ -19,13 +19,16 @@
     </v-row>
     <!-- <v-sheet class="mx-auto" elevation="4" max-width="800"> -->
     <v-slide-group
-      v-if="sheetsList"
+      v-if="sheetsList.length"
       v-model="sheetsList"
       class="pa-4"
       active-class="success"
-      show-arrows
     >
-      <v-slide-item v-for="(sheet, index) in sheetsList" :key="index">
+      <v-slide-item
+        v-for="(sheet, index) in sheetsList"
+        :key="index"
+        class="px-0"
+      >
         <v-card color="#F8F3F3" @click="onClickSheet(sheet)" rounded>
           <v-img
             width="230"
@@ -76,7 +79,6 @@ export default {
     return {
       modifiedParty: null,
       masterName: "",
-      // completeSheets: null,
       sheetsList: [],
       selectedSheet: null
     };
@@ -130,7 +132,9 @@ export default {
         });
     },
     onClickSheet(sheet) {
-      this.selectedSheet = sheet;
+      if (this.party.isMaster) {
+        this.selectedSheet = sheet;
+      }
     }
   }
 };

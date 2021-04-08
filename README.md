@@ -46,7 +46,12 @@ npm run serve
 
 ## Melhorias futuras
 
-- Melhorar desempenho;
+- Tempo de carregamento e fluidez na navegação;
+- _Feedback_ ao usuário, especialmente nas telas relacionadas à autenticação;
+- _Layout_ da tela de configurações;
+- _Layout_ da ficha visualizada pelo mestre da mesa;
+- Transformar algumas variáveis muito utilizadas em estados do _store_ para melhorar a lógica, por exemplo, do menu superior, da seleção de ficha dentro da mesa e do retorno à lista ao apagar uma ficha ou mesa;
+- Adicionar "Nenhuma mesa" nas opções de mesa;
 - Modo noturno;
 - Escolha de temas (cores);
 - Internacionalização;

@@ -70,6 +70,15 @@
         v-model="generalInfo.points"
         type="number"
       ></v-text-field>
+      <v-btn
+        color="red"
+        block
+        dark
+        @click="isRemoveElementDialogVisible = true"
+        depressed
+        tile
+        >Apagar mesa</v-btn
+      >
     </v-row>
     <v-divider></v-divider>
     <v-row justify="space-between" class="mt-6" no-gutters>
@@ -114,6 +123,13 @@
       buttonText="Okay"
       @close-dialog="ismessageDialogVisible = false"
     ></MessageDialog>
+
+    <RemoveElementDialog
+      :isDialogVisible="isRemoveElementDialogVisible"
+      :isParty="true"
+      :id="party.id"
+      @close-dialog="isRemoveElementDialogVisible = false"
+    ></RemoveElementDialog>
   </v-col>
 </template>
 
@@ -122,11 +138,13 @@ import firebase from "firebase/app";
 import "firebase/database";
 
 import MessageDialog from "@/components/Dialogs/MessageDialog";
+import RemoveElementDialog from "@/components/Dialogs/RemoveElementDialog";
 
 export default {
   name: "Settings",
   components: {
-    MessageDialog
+    MessageDialog,
+    RemoveElementDialog
   },
   props: {
     party: Object,
@@ -145,6 +163,7 @@ export default {
       isDescriptionEditable: false,
       description: "",
       ismessageDialogVisible: false,
+      isRemoveElementDialogVisible: false,
       imageURL: ""
     };
   },
