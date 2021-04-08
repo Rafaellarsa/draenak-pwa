@@ -1,15 +1,40 @@
 <template>
   <v-container>
-    <v-img src="@/assets/avatar-placeholder.gif" height="230"></v-img>
+    <v-img v-if="imageURL" :src="imageURL" height="230"></v-img>
+    <v-img
+      v-else-if="this.party.partyImageURL"
+      :src="this.party.partyImageURL"
+      height="230"
+    ></v-img>
+    <v-img v-else src="@/assets/avatar-placeholder.gif" height="230"></v-img>
     <v-tabs-items v-model="currentTab" class="mb-4">
       <v-tab-item>
-        <Settings :party="party"></Settings>
+        <Settings
+          :party="party"
+          :sheets="sheets"
+          @update-party="onUpdateParty"
+          @on-image-change="image = arguments[0]"
+        ></Settings>
       </v-tab-item>
       <v-tab-item>
-        <PartySheets :party="party"></PartySheets>
+        <PartySheets
+          :party="party"
+          :sheets="sheets"
+          @update-party="onUpdateParty"
+        ></PartySheets>
       </v-tab-item>
     </v-tabs-items>
-    <v-btn class="mx-1 mb-11" fab small fixed bottom right color="secondary">
+    <v-btn
+      class="mx-1 mb-11"
+      fab
+      small
+      fixed
+      bottom
+      right
+      @click="isAddPlayerToPartyVisible = true"
+      v-if="party.isMaster"
+      color="secondary"
+    >
       <v-icon>
         mdi-account-plus
       </v-icon>
@@ -35,17 +60,28 @@
         </v-tab>
       </v-tabs>
     </v-footer>
+    <AddPlayerToPartyDialog
+      :isDialogVisible="isAddPlayerToPartyVisible"
+      :partyId="party.id"
+      @close-dialog="isAddPlayerToPartyVisible = false"
+    ></AddPlayerToPartyDialog>
   </v-container>
 </template>
+
 <script>
+import firebase from "firebase/app";
+import "firebase/database";
+
 import PartySheets from "@/components/PartyTabs/PartySheets";
 import Settings from "@/components/PartyTabs/Settings";
+import AddPlayerToPartyDialog from "@/components/Dialogs/AddPlayerToPartyDialog";
 
 export default {
   name: "Party",
   components: {
     PartySheets,
-    Settings
+    Settings,
+    AddPlayerToPartyDialog
   },
   props: {
     party: Object
@@ -53,11 +89,107 @@ export default {
   data() {
     return {
       currentTab: null,
-      characterParties: null
+      characterParties: null,
+      image: null,
+      isAddPlayerToPartyVisible: false,
+      sheets: null
     };
+  },
+  computed: {
+    imageURL() {
+      if (this.image) {
+        return URL.createObjectURL(this.image);
+      } else {
+        return "";
+      }
+    }
   },
   mounted() {
     this.characterParties = this.character;
+    this.getSheetsByPartyId();
+  },
+  methods: {
+    onUpdateParty(modifiedParty) {
+      firebase
+        .database()
+        .ref("parties/" + modifiedParty.id)
+        .update(modifiedParty)
+        .catch(error => {
+          console.log("Erro na atualização da mesa: " + error.message);
+        });
+
+      if (modifiedParty.partyImageURL) {
+        this.updateImagePartyCard(this.image);
+      }
+    },
+    updateImagePartyCard(imageFile) {
+      // Verifica tamanho da imagem(bytes)
+      if (imageFile.size > 10485760) {
+        console.log("Imagem maior que 10MB");
+      }
+      // Verifica tipo da imagem
+      var validImageTypes = ["image/gif", "image/jpeg", "image/png"];
+      if (!validImageTypes.includes(imageFile.type)) {
+        console.log("É apenas permitido imagens do tipo GIF, JPEG e PNG");
+      }
+
+      // Montagem dos dados para a imagem no Firebase Storage
+      var fileType = imageFile.name.substring(
+        imageFile.name.lastIndexOf(".") + 1
+      );
+      var updateStorageRef = firebase
+        .storage()
+        .ref("party_images/" + this.party.id + "/" + "partyImage." + fileType);
+
+      // Grava/Atualiza imagem no Storage
+      updateStorageRef
+        .put(imageFile)
+        .then(() => {
+          // Recebe o link da imagem gravada no Storage e atualiza no RealTime
+          updateStorageRef
+            .getDownloadURL()
+            .then(url => {
+              firebase
+                .database()
+                .ref("parties/" + this.party.id)
+                .update({
+                  partyImageURL: url
+                });
+            })
+            .catch(error => {
+              console.log(
+                "Erro na gravação/atualização da imagem: " + error.message
+              );
+            });
+
+          console.log("Imagem gravada/atualizada com sucesso");
+        })
+        .catch(error => {
+          console.log(
+            "Erro na gravação/atualização da imagem: " + error.message
+          );
+        });
+    },
+
+    getSheetsByPartyId() {
+      let cardsList = [];
+
+      const ref = firebase
+        .database()
+        .ref("parties/" + this.party.id + "/players");
+      ref.once("value", snapshot => {
+        snapshot.forEach(childSnapshot => {
+          var cardValue = {
+            playerId: childSnapshot.key,
+            characterSheetId: childSnapshot.val().characterSheetId
+          };
+
+          cardsList.push(cardValue);
+        });
+      });
+
+      this.sheets = cardsList;
+    }
   }
 };
 </script>

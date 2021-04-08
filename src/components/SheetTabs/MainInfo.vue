@@ -46,7 +46,10 @@
       Idade: {{ modifiedSheet.age }}<br />
       Pontos: {{ modifiedSheet.points }}<br />
       Dinheiro: {{ modifiedSheet.money }}<br />
-      Mesa: {{ modifiedSheet.party }}
+      <span v-if="modifiedSheet.party"
+        >Mesa: {{ modifiedSheet.party.partyName }}</span
+      >
+      <span v-else>Mesa não escolhida</span>
     </p>
     <p v-else>
       <v-text-field
@@ -81,8 +84,13 @@
         v-model="generalInfo.money"
       ></v-text-field>
       <v-select
-        prefix="Mesa:"
+        prefix="Mesa: "
         no-data-text="Não há mesas disponíveis"
+        :items="parties"
+        item-text="partyName"
+        item-value="partyId"
+        v-model="generalInfo.party"
+        return-object
         dense
       ></v-select>
     </p>
@@ -330,7 +338,8 @@ export default {
     NewTraitDialog
   },
   props: {
-    character: Object
+    character: Object,
+    parties: Array
   },
   data() {
     return {
@@ -342,7 +351,8 @@ export default {
         height: "",
         age: "",
         points: "",
-        money: ""
+        money: "",
+        party: ""
       },
       isAttributesEditable: false,
       attributes: [],
@@ -373,6 +383,9 @@ export default {
     this.attributes = this.character.attributes;
     if (this.character.skills) {
       this.skills = this.character.skills;
+    }
+    if (this.character.party) {
+      this.generalInfo.party = this.character.party;
     }
   },
   methods: {
@@ -471,6 +484,7 @@ export default {
 .empty-string {
   color: #9a9a9a;
   font-style: italic;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;

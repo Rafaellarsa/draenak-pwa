@@ -11,6 +11,7 @@
       <v-tab-item>
         <MainInfo
           :character="characterSheet"
+          :parties="parties"
           @update-sheet="onUpdateSheet"
           @on-image-change="image = arguments[0]"
         ></MainInfo>
@@ -82,7 +83,8 @@ export default {
     Notes
   },
   props: {
-    character: Object
+    character: Object,
+    parties: Array
   },
   data() {
     return {
@@ -170,12 +172,10 @@ export default {
       updateStorageRef
         .put(imageFile)
         .then(() => {
-          console.log("entrei aqui");
           // Recebe o link da imagem gravada no Storage e atualiza no RealTime
           updateStorageRef
             .getDownloadURL()
             .then(url => {
-              console.log(url);
               firebase
                 .database()
                 .ref(
@@ -200,6 +200,33 @@ export default {
           console.log(
             "Erro na gravação/atualização da imagem: " + error.message
           );
+        });
+    },
+    addSheetToParty(cardId, partyId) {
+      // Atualiza o jogador na mesa
+      firebase
+        .database()
+        .ref(
+          "parties/" + partyId + "/players/" + this.$store.state.user.user.id
+        )
+        .update({ characterSheetId: cardId })
+        .then(() => {
+          // Insere o jogador no relacionamento mesa x jogador
+          firebase
+            .database()
+            .ref(
+              "userParties/players/" +
+                this.$store.state.user.user.id +
+                "/" +
+                partyId
+            )
+            .update({ characterSheetId: cardId })
+            .catch(error => {
+              console.log("Erro ao adicionar o jogador: " + error.message);
+            });
+        })
+        .catch(error => {
+          console.log("Erro ao adicionar o jogador: " + error.message);
         });
     }
   }

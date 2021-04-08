@@ -6,6 +6,13 @@
           <v-card color="#F8F3F3" @click="onClickParty(party)">
             <div class="d-flex flex-no-wrap justify-space-between">
               <v-img
+                v-if="party.partyImageURL"
+                :src="party.partyImageURL"
+                height="138"
+                width="95"
+              ></v-img>
+              <v-img
+                v-else
                 src="@/assets/avatar-placeholder.gif"
                 height="138"
                 width="95"
@@ -19,7 +26,6 @@
 
                 <v-card-text>
                   {{ party.theme }}<br />
-                  {{ party.quantity + " jogadores" }}<br />
                   {{ party.points + " pontos" }}
                 </v-card-text>
               </div>
@@ -47,13 +53,16 @@
     <NewPartyDialog
       :is-dialog-visible="isDialogVisible"
       @close-dialog="isDialogVisible = false"
+      @update-parties-list="getPartiesList()"
     ></NewPartyDialog>
-    <!-- @update-parties-list="getSheetsList()" -->
   </v-container>
   <Party v-else :party="selectedParty" />
 </template>
 
 <script>
+import firebase from "firebase/app";
+import "firebase/database";
+
 import Party from "@/components/Party";
 import NewPartyDialog from "@/components/Dialogs/NewPartyDialog";
 
@@ -66,41 +75,68 @@ export default {
   data() {
     return {
       color: "#209898",
-      parties: [
-        {
-          name: "Rolezinho virtual",
-          theme: "Fantasia Medieval",
-          master: "Vittinho do SUS",
-          quantity: 2,
-          points: 120
-        },
-        {
-          name: "Nightcity",
-          theme: "Cyberpunk",
-          master: "Moranguinho Candelabro",
-          quantity: 3,
-          points: 200
-        },
-        {
-          name: "Castelo Ratibum",
-          theme: "Fantasia",
-          master: "Maraena Madalena",
-          quantity: 4,
-          points: 135
-        },
-        {
-          name: "Terra Média",
-          theme: "Alta fantasia",
-          master: "Jodoca Aloma",
-          quantity: 4,
-          points: 230
-        }
-      ],
+      parties: [],
       selectedParty: null,
       isDialogVisible: false
     };
   },
+  mounted() {
+    this.getPartiesList();
+  },
   methods: {
+    getPartiesList() {
+      this.parties = [];
+
+      firebase
+        .database()
+        .ref("userParties/masters/" + this.$store.state.user.user.id)
+        .once("value", snapshot => {
+          snapshot.forEach(item => {
+            firebase
+              .database()
+              .ref("parties/" + item.key)
+              .once("value", snapshot2 => {
+                var party = {
+                  id: item.key,
+                  partyImageURL: snapshot2.val().partyImageURL,
+                  name: snapshot2.val().name,
+                  theme: snapshot2.val().theme,
+                  points: snapshot2.val().points,
+                  description: snapshot2.val().description,
+                  players: snapshot2.val().players,
+                  masterId: snapshot2.val().masterId,
+                  isMaster: true
+                };
+                this.parties.push(party);
+              });
+          });
+        });
+
+      firebase
+        .database()
+        .ref("userParties/players/" + this.$store.state.user.user.id)
+        .once("value", snapshot => {
+          snapshot.forEach(item => {
+            firebase
+              .database()
+              .ref("parties/" + item.key)
+              .once("value", snapshot2 => {
+                let party = {
+                  id: item.key,
+                  partyImageURL: snapshot2.val().partyImageURL,
+                  name: snapshot2.val().name,
+                  theme: snapshot2.val().theme,
+                  points: snapshot2.val().points,
+                  description: snapshot2.val().description,
+                  players: snapshot2.val().players,
+                  masterId: snapshot2.val().masterId,
+                  isMaster: false
+                };
+                this.parties.push(party);
+              });
+          });
+        });
+    },
     onClickParty(party) {
       this.selectedParty = party;
     }

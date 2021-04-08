@@ -69,43 +69,34 @@ export default {
     },
     onClickCreateButton() {
       this.isVisible = false;
-      let id = this.$store.state.user.user.id + performance.now();
+      let id = "P" + this.$store.state.user.user.id + performance.now();
       id = id.replace(".", "");
-
-      const sheet = {
-        id: id,
-        name: this.name,
-        party: "",
-        race: "",
-        height: "",
-        age: "",
-        points: this.points,
-        money: "",
-        attributes: [
-          { name: "Físico", level: 5 },
-          { name: "Coordenação", level: 5 },
-          { name: "Inteligência", level: 5 },
-          { name: "Astúcia", level: 5 },
-          { name: "Vontade", level: 5 },
-          { name: "Presença", level: 5 }
-        ],
-        skills: [],
-        traits: [],
-        inventory: [],
-        injuries: [],
-        history: "",
-        notes: ""
-      };
 
       firebase
         .database()
-        .ref("characterSheets/" + this.$store.state.user.user.id + "/" + id)
-        .set(sheet, error => {
-          if (error) {
-            console.log("Erro no cadastro da ficha: " + error.message);
-          }
-          this.$emit("update-sheets-list");
+        .ref("parties/" + id)
+        .set({
+          id: id,
+          name: this.name,
+          masterId: this.$store.state.user.user.id,
+          masterEmail: this.$store.state.user.user.email,
+          theme: this.theme,
+          description: "",
+          points: this.points
         });
+
+      firebase
+        .database()
+        .ref("userParties/masters/" + this.$store.state.user.user.id + "/" + id)
+        .set({
+          name: this.name,
+          masterId: this.$store.state.user.user.id,
+          theme: this.theme,
+          description: "",
+          points: this.points
+        });
+
+      this.$emit("update-parties-list");
     }
   }
 };

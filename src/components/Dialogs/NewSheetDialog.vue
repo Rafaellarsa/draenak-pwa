@@ -19,6 +19,11 @@
         <v-select
           label="Mesa"
           no-data-text="Não há mesas disponíveis"
+          :items="parties"
+          item-text="partyName"
+          item-value="partyId"
+          v-model="party"
+          return-object
           dense
         ></v-select>
       </v-card-text>
@@ -42,13 +47,15 @@ import "firebase/database";
 export default {
   name: "NewSheetDialog",
   props: {
-    isDialogVisible: Boolean
+    isDialogVisible: Boolean,
+    parties: Array
   },
   data() {
     return {
       name: "",
       points: null,
-      isVisible: false
+      isVisible: false,
+      party: null
     };
   },
   watch: {
@@ -73,7 +80,7 @@ export default {
       const sheet = {
         id: id,
         name: this.name,
-        party: "",
+        party: this.party,
         race: "",
         height: "",
         age: "",
@@ -102,7 +109,36 @@ export default {
           if (error) {
             console.log("Erro no cadastro da ficha: " + error.message);
           }
-          this.$emit("update-parties-list");
+          this.$emit("update-sheets-list");
+        });
+
+      this.addSheetToParty(id, this.party.partyId);
+    },
+    addSheetToParty(cardId, partyId) {
+      // Atualiza o jogador na mesa
+      firebase
+        .database()
+        .ref(
+          "parties/" + partyId + "/players/" + this.$store.state.user.user.id
+        )
+        .update({ characterSheetId: cardId })
+        .then(() => {
+          // Insere o jogador no relacionamento mesa x jogador
+          firebase
+            .database()
+            .ref(
+              "userParties/players/" +
+                this.$store.state.user.user.id +
+                "/" +
+                partyId
+            )
+            .update({ characterSheetId: cardId })
+            .catch(error => {
+              console.log("Erro ao adicionar o jogador: " + error.message);
+            });
+        })
+        .catch(error => {
+          console.log("Erro ao adicionar o jogador: " + error.message);
         });
     }
   }

@@ -29,7 +29,9 @@
                   <div v-else>Raça indefinida</div>
                   <div v-if="sheet.age">{{ sheet.age }}</div>
                   <div v-else>Idade indefinida</div>
-                  <div v-if="sheet.party">{{ "Mesa: " + sheet.party }}</div>
+                  <div v-if="sheet.party">
+                    {{ "Mesa: " + sheet.party.partyName }}
+                  </div>
                   <div v-else>Mesa não escolhida</div>
                 </v-card-text>
               </div>
@@ -56,12 +58,13 @@
 
     <NewSheetDialog
       :is-dialog-visible="isDialogVisible"
+      :parties="partiesList"
       @close-dialog="onCloseDialog()"
       @update-sheets-list="getSheetsList()"
     ></NewSheetDialog>
   </v-container>
 
-  <CharacterSheet v-else :character="selectedSheet" />
+  <CharacterSheet v-else :character="selectedSheet" :parties="partiesList" />
 </template>
 
 <script>
@@ -81,27 +84,52 @@ export default {
     return {
       isDialogVisible: false,
       selectedSheet: null,
-      sheets: null
+      sheets: null,
+      partiesList: null
     };
   },
   mounted() {
     this.getSheetsList();
+    this.getPartiesList();
   },
   methods: {
     getSheetsList() {
-      var cardsList = [];
+      let cardsList = [];
 
       firebase
         .database()
         .ref("characterSheets/" + this.$store.state.user.user.id)
         .once("value", snapshot => {
           snapshot.forEach(item => {
-            var cardsValue = item.val();
+            let cardsValue = item.val();
             cardsList.push(cardsValue);
           });
         });
 
       this.sheets = cardsList;
+    },
+    getPartiesList() {
+      let partiesList = [];
+
+      firebase
+        .database()
+        .ref("userParties/players/" + this.$store.state.user.user.id)
+        .once("value", snapshot => {
+          snapshot.forEach(item => {
+            firebase
+              .database()
+              .ref("parties/" + item.key)
+              .once("value", snapshot2 => {
+                let party = {
+                  partyId: item.key,
+                  partyName: snapshot2.val().name
+                };
+                partiesList.push(party);
+              });
+          });
+        });
+
+      this.partiesList = partiesList;
     },
     onClickSheet(sheet) {
       this.selectedSheet = sheet;
